@@ -287,18 +287,18 @@ function cancelSeat(element){
                 console.log(data);
                 seats = document.getElementsByClassName('cell-'+key+'3');
                 seats[0].innerText = parseInt(seats[0].innerText) +1;
-                var reserveButton = document.createElement('button');
-                reserveButton.setAttribute("data-value1", rideId);
-                reserveButton.setAttribute("data-value2", key);
-                reserveButton.classList.add("cell-"+key+"5");
-                reserveButton.classList.add("m-1");
-                reserveButton.classList.add("btn");
-                reserveButton.classList.add("btn-sm");
-                reserveButton.classList.add("btn-outline-primary");
-                reserveButton.setAttribute("onclick", "reserveSeat(this)");
-                reserveButton.innerText = "Save";
+                var saveButton = document.createElement('button');
+                saveButton.setAttribute("data-value1", rideId);
+                saveButton.setAttribute("data-value2", key);
+                saveButton.classList.add("cell-"+key+"5");
+                saveButton.classList.add("m-1");
+                saveButton.classList.add("btn");
+                saveButton.classList.add("btn-sm");
+                saveButton.classList.add("btn-outline-primary");
+                saveButton.setAttribute("onclick", "reserveSeat(this)");
+                saveButton.innerText = "Save";
                 cell = document.getElementsByClassName('cell-'+key+'5');
-                cell[0].childNodes[0].replaceWith(reserveButton);
+                cell[0].childNodes[0].replaceWith(saveButton);
             });
 }
 
@@ -312,17 +312,17 @@ function reserveSeat(element){
                 seats = document.getElementsByClassName('cell-'+key+'3');
                 seats[0].innerText = parseInt(seats[0].innerText) -1;
                 cell = document.getElementsByClassName('cell-'+key+'5');
-                var reserveButton = document.createElement('button');
-                reserveButton.setAttribute("data-value1", rideId);
-                reserveButton.setAttribute("data-value2", key);
-                reserveButton.classList.add("cell-"+key+"5");
-                reserveButton.classList.add("m-1");
-                reserveButton.classList.add("btn");
-                reserveButton.classList.add("btn-sm");
-                reserveButton.classList.add("btn-outline-danger");
-                reserveButton.setAttribute("onclick", "cancelSeat(this)");
-                reserveButton.innerText = "Cancel";
-                cell[0].childNodes[0].replaceWith(reserveButton);
+                var cancelButton = document.createElement('button');
+                cancelButton.setAttribute("data-value1", rideId);
+                cancelButton.setAttribute("data-value2", key);
+                cancelButton.classList.add("cell-"+key+"5");
+                cancelButton.classList.add("m-1");
+                cancelButton.classList.add("btn");
+                cancelButton.classList.add("btn-sm");
+                cancelButton.classList.add("btn-outline-danger");
+                cancelButton.setAttribute("onclick", "cancelSeat(this)");
+                cancelButton.innerText = "Cancel";
+                cell[0].childNodes[0].replaceWith(cancelButton);
             });
 }
 
