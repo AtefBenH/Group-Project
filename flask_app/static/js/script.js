@@ -327,40 +327,49 @@ function reserveSeat(element){
 }
 
 
-function updateRide(element)
-    {
-        updateForm = document.getElementById('updateBookForm');
+// Edited this function to make it work with the form "editRideForm"
+function updateRide(ride_id) {
+    updateForm = document.getElementById('editRideForm');
+    var formData = new FormData(updateForm);
 
-        var formData = new FormData(updateForm);
-
-        let book_id = element.value;
-        fetch("/books/"+book_id+"/update", { method: 'POST', body: formData })
+    fetch("/rides/" + ride_id + "/update", {
+            method: 'POST',
+            body: formData
+        })
         .then(response => response.json())
         .then(data => {
-            error = document.getElementById('updateBookError');
+            error = document.getElementById('UpdateRideErrorMessage');
             error.innerHTML = ""
-            if (data.errors.length !=0){
+            if (data.errors.length != 0) {
                 for (key in data.errors) {
                     error.innerHTML += data.errors[key] + '<br>';
-                    if (data.errors[key] == "Book Must Have a Title"){
-                        field = document.getElementById('title');
+                    if (data.errors[key] == "From Location Must Be At Least 2 Characters") {
+                        field = document.getElementById('from');
+                        // field.value = "";
                         field.style.backgroundColor = "lightcoral";
                     }
-                    if (data.errors[key] == "Author must contain at least 2 characters"){
-                        field = document.getElementById('author');
+                    if (data.errors[key] == "Destination Must Be At Least 2 Characters") {
+                        field = document.getElementById('to');
+                        // field.value = "";
                         field.style.backgroundColor = "lightcoral";
                     }
-                    if (data.errors[key] == "Description must contain at least 5 characters"){
-                        field = document.getElementById('description');
+                    if (data.errors[key] == "Ride Must Have A Date and Time") {
+                        field = document.getElementById('when');
+                        // field.value = "";
+                        field.style.backgroundColor = "lightcoral";
+                    }
+                    if (data.errors[key] == "Ride Must Have A Number Of Seats") {
+                        field = document.getElementById('seats');
+                        // field.value = "";
                         field.style.backgroundColor = "lightcoral";
                     }
                 }
-            }
-            else {
-                window.location.replace('/dashboard');
+            } else {
+                window.location.replace('/api/my_created_rides');
             }
         })
-    }
+}
+
 
 function createLike(element) {
     let book_id = element.value;

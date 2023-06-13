@@ -27,3 +27,18 @@ def delete(ride_id):
         Ride.addSeat({'id' : ride_id})
         return jsonify({'message' : "success"})
     return redirect('/')
+
+
+#added this method to delete a passenger from the ride
+@app.route('/join_rides/<int:user_id>/<int:ride_id>/delete')
+def delete_from_ride(user_id, ride_id):
+    if 'user_id' in session:
+        data = {
+            'user_id' : user_id,
+            'ride_id' : ride_id
+        }
+        Join_ride.cancel(data)
+        Ride.addSeat({'id' : ride_id})
+        # return jsonify({'message' : "success"})
+        return redirect('/rides/'+ str(ride_id) +'/edit')
+    return redirect('/')

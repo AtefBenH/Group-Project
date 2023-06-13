@@ -97,7 +97,8 @@ class User:
     
     @classmethod
     def get_user_with_rides(cls, data):
-        query = "SELECT * FROM users LEFT JOIN join_rides ON join_rides.user_id = users.id LEFT JOIN rides ON join_rides.book_id = rides.id WHERE users.id = %(id)s;"
+        #fixed this query by changing the book_id to ride_id
+        query = "SELECT * FROM users LEFT JOIN join_rides ON join_rides.user_id = users.id LEFT JOIN rides ON join_rides.ride_id = rides.id WHERE users.id = %(id)s;"
         results = connectToMySQL(DATABASE).query_db(query , data)
         user = cls(results[0])
         for row_from_db in results:
