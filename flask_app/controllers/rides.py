@@ -132,7 +132,7 @@ def find_rides():
             rides = Ride.findRides(data)
             joined_rides = Join_ride.get_rides_id_for_user({'id' : session['user_id']})
             created_rides = Ride.get_created_rides({'id' : session['user_id']})
-            return jsonify({'errors' : [], 'rides' : rides, 'joined_rides' : joined_rides, 'created_rides' : created_rides})
+            return jsonify({'errors' : [], 'user_id' : session['user_id'], 'rides' : rides, 'joined_rides' : joined_rides, 'created_rides' : created_rides})
         return jsonify({'errors' : errors})
     return redirect('/')
 

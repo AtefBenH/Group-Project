@@ -105,6 +105,15 @@ class Ride:
             WHERE id = %(id)s;
         """
         return connectToMySQL(DATABASE).query_db(query, data)
+    
+    @classmethod
+    def addSeat(cls, data):
+        query = """
+            UPDATE rides SET 
+            seats = seats + 1
+            WHERE id = %(id)s;
+        """
+        return connectToMySQL(DATABASE).query_db(query, data)
 
     @classmethod
     def get_passengers(cls, data):

@@ -24,5 +24,6 @@ def delete(ride_id):
             'ride_id' : ride_id
         }
         Join_ride.cancel(data)
+        Ride.addSeat({'id' : ride_id})
         return jsonify({'message' : "success"})
     return redirect('/')

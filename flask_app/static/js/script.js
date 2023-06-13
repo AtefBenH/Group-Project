@@ -236,15 +236,15 @@ function findRide(){
                                     if(data.joined_rides.length>0){
                                         for (var j = 0; j < data.joined_rides.length; j++){
                                             if (data.rides[key].id == data.joined_rides[j]){
-                                                var reserveButton = document.createElement('button');
-                                                reserveButton.setAttribute("data-value1", data.rides[key].id);
-                                                reserveButton.setAttribute("data-value2", key);
-                                                reserveButton.classList.add("btn");
-                                                reserveButton.classList.add("btn-sm");
-                                                reserveButton.classList.add("btn-outline-danger");
-                                                reserveButton.setAttribute("onclick", "cancelSeat(this)");
-                                                reserveButton.innerText = "Cancel";
-                                                cell.appendChild(reserveButton);
+                                                var cancelButton = document.createElement('button');
+                                                cancelButton.setAttribute("data-value1", data.rides[key].id);
+                                                cancelButton.setAttribute("data-value2", key);
+                                                cancelButton.classList.add("btn");
+                                                cancelButton.classList.add("btn-sm");
+                                                cancelButton.classList.add("btn-outline-danger");
+                                                cancelButton.setAttribute("onclick", "cancelSeat(this)");
+                                                cancelButton.innerText = "Cancel";
+                                                cell.appendChild(cancelButton);
                                                 found = true;
                                                 break;
                                             }
@@ -278,6 +278,30 @@ function findRide(){
             })
 }
 
+function cancelSeat(element){
+    rideId = element.getAttribute("data-value1");
+    key = element.getAttribute("data-value2");
+    fetch("/join_rides/"+rideId+"/delete")
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                seats = document.getElementsByClassName('cell-'+key+'3');
+                seats[0].innerText = parseInt(seats[0].innerText) +1;
+                var reserveButton = document.createElement('button');
+                reserveButton.setAttribute("data-value1", rideId);
+                reserveButton.setAttribute("data-value2", key);
+                reserveButton.classList.add("cell-"+key+"5");
+                reserveButton.classList.add("m-1");
+                reserveButton.classList.add("btn");
+                reserveButton.classList.add("btn-sm");
+                reserveButton.classList.add("btn-outline-primary");
+                reserveButton.setAttribute("onclick", "reserveSeat(this)");
+                reserveButton.innerText = "Save";
+                cell = document.getElementsByClassName('cell-'+key+'5');
+                cell[0].childNodes[0].replaceWith(reserveButton);
+            });
+}
+
 function reserveSeat(element){
     rideId = element.getAttribute("data-value1");
     key = element.getAttribute("data-value2");
@@ -286,14 +310,22 @@ function reserveSeat(element){
             .then(data => {
                 console.log(data);
                 seats = document.getElementsByClassName('cell-'+key+'3');
-                // newSeats = document.createElement("td");
                 seats[0].innerText = parseInt(seats[0].innerText) -1;
-                reserve = document.getElementsByClassName('cell-'+key+'5');
-                // newReserve = document.createElement("p");
-                // reserve.replaceWith(newReserve);
-                reserve[0].innerHTML = "Enjoy The Ride";
+                cell = document.getElementsByClassName('cell-'+key+'5');
+                var reserveButton = document.createElement('button');
+                reserveButton.setAttribute("data-value1", rideId);
+                reserveButton.setAttribute("data-value2", key);
+                reserveButton.classList.add("cell-"+key+"5");
+                reserveButton.classList.add("m-1");
+                reserveButton.classList.add("btn");
+                reserveButton.classList.add("btn-sm");
+                reserveButton.classList.add("btn-outline-danger");
+                reserveButton.setAttribute("onclick", "cancelSeat(this)");
+                reserveButton.innerText = "Cancel";
+                cell[0].childNodes[0].replaceWith(reserveButton);
             });
 }
+
 
 function updateRide(element)
     {
