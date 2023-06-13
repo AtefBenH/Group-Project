@@ -66,8 +66,14 @@ def edit_ride(ride_id):
     if 'user_id' in session:
         ride = Ride.get_by_id({'id' : ride_id})
         logged_user = User.get_by_id({'id' : session['user_id']})
-        joined_rides = User.get_user_with_rides({'id' : session['user_id']})
-        passengers = Ride.get_ride_with_passengers({'id' : ride_id})
+        try:
+            joined_rides = User.get_user_with_rides({'id' : session['user_id']})
+        except:
+            joined_rides = []
+        try:
+            passengers = Ride.get_ride_with_passengers({'id' : ride_id})
+        except:
+            passengers = []
         if ride:
             if ride.user_id == session['user_id'] :
                 return render_template('edit_ride.html',joined_rides=joined_rides, ride = ride, user=logged_user, passengers=passengers)
