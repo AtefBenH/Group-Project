@@ -98,7 +98,7 @@ def delete_ride(ride_id):
             if ride_to_delete.user_id == session['user_id'] :
                 Join_ride.deleteByRide({'ride_id' : ride_id})
                 Ride.delete({'id' : ride_id})
-                return redirect('/home')
+                return redirect('/api/my_created_rides')
             else:
                 return redirect('/')
         else :
@@ -124,6 +124,8 @@ def find_rides():
                 'when_time' : f"%%{datetime.strptime(request.form['when_time'], '%Y-%m-%dT%H:%M')}%%"
             }
             rides = Ride.findRides(data)
+            joined_rides = Join_ride.get_rides_id_for_user({'id' : session['user_id']})
+            created_rides = Ride.get_created_rides({'id' : session['user_id']})
             return jsonify({'errors' : [], 'rides' : rides})
         return jsonify({'errors' : errors})
     return redirect('/')

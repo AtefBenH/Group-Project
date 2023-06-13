@@ -242,13 +242,13 @@ function reserveSeat(element){
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                seats = document.getElementsByClassName('cell-03');
+                seats = document.getElementsByClassName('cell-'+key+'3');
                 // newSeats = document.createElement("td");
-                seats.innerText = parseInt(seats.innerText) -1;
-                reserve = document.getElementsByClassName('cell-05');
+                seats[0].innerText = parseInt(seats[0].innerText) -1;
+                reserve = document.getElementsByClassName('cell-'+key+'5');
                 // newReserve = document.createElement("p");
                 // reserve.replaceWith(newReserve);
-                reserve.innerHTML = "Seat Reserved";
+                reserve[0].innerHTML = "Enjoy The Ride";
             });
 }
 

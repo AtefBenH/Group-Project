@@ -39,7 +39,7 @@ class Ride:
     @classmethod
     def get_all(cls):
         query = """
-            SELECT * FROM rides JOIN users ON rides.user_id = users.id ORDER;
+            SELECT * FROM rides JOIN users ON rides.user_id = users.id.
         """
         results = connectToMySQL(DATABASE).query_db(query)
         rides =[]

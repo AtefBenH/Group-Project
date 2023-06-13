@@ -26,11 +26,11 @@ def register():
 
 @app.route('/api/users/register', methods = ['POST'])
 def create_user():
-    data = request.get_json()
-    errors = User.validate(data)
+    # data = request.get_json()
+    errors = User.validate(request.form)
     
     if len(errors)==0:
-        hashed_password = bcrypt.generate_password_hash(data['password'])
+        hashed_password = bcrypt.generate_password_hash(request.form['password'])
         data = {
                 **data, 'password':hashed_password
             }
@@ -45,10 +45,10 @@ def get_all():
 
 @app.route('/api/users/login', methods = ['POST'])
 def login():
-    data = request.get_json()
-    user_from_db = User.get_by_email({'email' : data['email']})
+    # data = request.get_json()
+    user_from_db = User.get_by_email({'email' : request.form['email']})
     if user_from_db :
-        if bcrypt.check_password_hash(user_from_db.password, data['password']):
+        if bcrypt.check_password_hash(user_from_db.password, request.form['password']):
             session['user_id'] = user_from_db.id
             return jsonify({'message' : "success"})
     return jsonify({'message' : "Error"})
