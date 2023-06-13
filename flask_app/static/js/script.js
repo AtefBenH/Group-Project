@@ -212,18 +212,61 @@ function findRide(){
                                     cell.textContent = data.rides[key].seats;
                                     break;
                                 case 4:
-                                    cell.textContent = data.rides[key].driver;
+                                    var profileLink = document.createElement('button');
+                                    profileLink.setAttribute("data-value1", data.rides[key].user_id);
+                                    profileLink.classList.add("btn");
+                                    profileLink.classList.add("btn-sm");
+                                    profileLink.classList.add("btn-outline-dark");
+                                    profileLink.setAttribute("onclick", "viewProfile(this)");
+                                    profileLink.innerText = data.rides[key].driver;
+                                    cell.appendChild(profileLink);
                                     break;
                                 case 5:
-                                    var reserveButton = document.createElement('button');
-                                    reserveButton.setAttribute("data-value1", data.rides[key].id);
-                                    reserveButton.setAttribute("data-value2", key);
-                                    reserveButton.classList.add("btn");
-                                    reserveButton.classList.add("btn-outline-primary");
-                                    reserveButton.setAttribute("onclick", "reserveSeat(this)");
-                                    reserveButton.innerText = "Save Seat";
-                                    cell.appendChild(reserveButton);
-                                    break;
+                                    found = false;
+                                    if (data.created_rides.length>0){
+                                        
+                                        for (var j = 0; j < data.created_rides.length; j++){
+                                            if (data.rides[key].id == data.created_rides[j].id){
+                                                cell.textContent = "Drive Safe";
+                                                found = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if(data.joined_rides.length>0){
+                                        for (var j = 0; j < data.joined_rides.length; j++){
+                                            if (data.rides[key].id == data.joined_rides[j]){
+                                                var reserveButton = document.createElement('button');
+                                                reserveButton.setAttribute("data-value1", data.rides[key].id);
+                                                reserveButton.setAttribute("data-value2", key);
+                                                reserveButton.classList.add("btn");
+                                                reserveButton.classList.add("btn-sm");
+                                                reserveButton.classList.add("btn-outline-danger");
+                                                reserveButton.setAttribute("onclick", "cancelSeat(this)");
+                                                reserveButton.innerText = "Cancel";
+                                                cell.appendChild(reserveButton);
+                                                found = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if(found){
+                                        break;
+                                    }
+                                    else {
+                                        var reserveButton = document.createElement('button');
+                                        reserveButton.setAttribute("data-value1", data.rides[key].id);
+                                        reserveButton.setAttribute("data-value2", key);
+                                        reserveButton.classList.add("btn");
+                                        reserveButton.classList.add("btn-sm");
+                                        reserveButton.classList.add("btn-outline-primary");
+                                        reserveButton.setAttribute("onclick", "reserveSeat(this)");
+                                        reserveButton.innerText = "Save";
+                                        cell.appendChild(reserveButton);
+                                        break;
+                                    }
+                                    
+                    
                             }
                             
                             dataRow.appendChild(cell);

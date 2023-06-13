@@ -85,7 +85,7 @@ class Ride:
                 "created_at" : row_from_db["created_at"],
                 "updated_at" : row_from_db["updated_at"]
             }
-            created_rides.append(ride.Ride(ride_data))
+            created_rides.append(ride_data)
         return created_rides
 
     @classmethod
@@ -107,7 +107,7 @@ class Ride:
         return connectToMySQL(DATABASE).query_db(query, data)
 
     @classmethod
-    def get_ride_with_passengers(cls, data):
+    def get_passengers(cls, data):
         query = "SELECT * FROM rides JOIN join_rides ON join_rides.ride_id = rides.id LEFT JOIN users ON join_rides.user_id = users.id WHERE rides.id = %(id)s ORDER BY users.first_name;"
         results = connectToMySQL(DATABASE).query_db(query , data)
         riders = []

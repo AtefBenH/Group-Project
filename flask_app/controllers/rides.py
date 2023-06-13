@@ -57,7 +57,7 @@ def view_ride(ride_id):
         if ride:
             logged_user = User.get_by_id({'id' : session['user_id']})
             creator = User.get_by_id({'id' : ride.user_id})
-            passengers = Ride.get_ride_with_passengers({'id' : ride_id})
+            passengers = Ride.get_passengers({'id' : ride_id})
             return render_template('view_ride.html', ride = ride, user = logged_user, creator=creator, passengers=passengers)
     return redirect('/')
 
@@ -71,7 +71,7 @@ def edit_ride(ride_id):
         except:
             joined_rides = []
         try:
-            passengers = Ride.get_ride_with_passengers({'id' : ride_id})
+            passengers = Ride.get_passengers({'id' : ride_id})
         except:
             passengers = []
         if ride:
@@ -132,7 +132,7 @@ def find_rides():
             rides = Ride.findRides(data)
             joined_rides = Join_ride.get_rides_id_for_user({'id' : session['user_id']})
             created_rides = Ride.get_created_rides({'id' : session['user_id']})
-            return jsonify({'errors' : [], 'rides' : rides})
+            return jsonify({'errors' : [], 'rides' : rides, 'joined_rides' : joined_rides, 'created_rides' : created_rides})
         return jsonify({'errors' : errors})
     return redirect('/')
 
