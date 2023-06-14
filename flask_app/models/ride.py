@@ -174,26 +174,26 @@ class Ride:
 
 
     #!SEARCH ride BY FILTER (TITLE, AUTHOR, DESCRIPTION)
-    # @classmethod
-    # def search(cls, data):
-    #     query = "SELECT * FROM rides WHERE {filter} LIKE %(search)s;"
-    #     results = connectToMySQL(DATABASE).query_db(query.format(filter=data['filter']), data)
-    #     rides = []
-    #     for row in results:
-    #         ride = cls(row)
-    #         rides.append(ride)
-    #     return rides
+    @classmethod
+    def search(cls, data):
+        query = "SELECT * FROM rides WHERE {filter} LIKE %(search)s;"
+        results = connectToMySQL(DATABASE).query_db(query.format(filter=data['filter']), data)
+        rides = []
+        for row in results:
+            ride = cls(row)
+            rides.append(ride)
+        return rides
     
     # ?SEARCH ride BY DRIVER
-    # @classmethod
-    # def searchByDriver(cls, data):
-    #     query = """SELECT * FROM rides 
-    #         JOIN users ON rides.user_id = users.id 
-    #         WHERE users.first_name LIKE %(search)s OR users.last_name LIKE %(search)s;
-    #         """
-    #     results = connectToMySQL(DATABASE).query_db(query, data)
-    #     rides = []
-    #     for row in results:
-    #         ride = cls(row)
-    #         rides.append(ride)
-    #     return rides
+    @classmethod
+    def searchByDriver(cls, data):
+        query = """SELECT * FROM users 
+            JOIN rides ON rides.user_id = users.id 
+            WHERE users.first_name LIKE %(search)s OR users.last_name LIKE %(search)s;
+            """
+        results = connectToMySQL(DATABASE).query_db(query, data)
+        rides = []
+        for row in results:
+            ride = cls(row)
+            rides.append(ride)
+        return rides
