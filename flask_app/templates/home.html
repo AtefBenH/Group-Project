@@ -48,9 +48,7 @@
                                 </a>
                                 <ul class="dropdown-menu text-center bg-secondary-subtle text-info-emphasis fw-medium">
                                     <li>
-                                        <p clpss="dropdown-item">
-                                            {{ user.first_name}} {{ user.last_name}}
-                                        </p>
+                                        <a href="/profile/{{user.id}}" class="dropdown-item">{{ user.first_name}} {{ user.last_name}}</a>
                                     </li>
                                     <li>
                                         <p class="dropdown-item text-center bg-secondary-subtle text-info-emphasis fw-medium ">

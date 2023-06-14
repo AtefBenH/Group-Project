@@ -1,6 +1,7 @@
 from flask_app import app
 from flask import render_template, redirect, request, session, jsonify
 from flask_app.models.user import User
+from flask_app.models.ride import Ride
 from flask_app.models.rate import Rate
 from flask_app.models.comment import Comment
 from flask_bcrypt import Bcrypt
@@ -14,6 +15,26 @@ def index():
         return redirect('/home')
     return render_template('login.html')
 
+
+@app.route('/users/<int:profile_id>/view')
+def view_profile(profile_id):
+    if 'user_id' in session:
+        logged_user = User.get_by_id({'id' : session['user_id']})
+        user_profile = User.get_by_id({'id' : profile_id})
+        created_rides = Ride.get_created_rides({'id' : profile_id})
+        comments = Comment.getAllByProfile({'id' : profile_id})
+        rate = Rate.getAvgRate({'id' : profile_id})
+        all_raters_id = Rate.get_profile_raters_id({'profile_id' : profile_id})
+        actual_rate = Rate.get_rater_profile_rate({'rater_id' : session['user_id'], 'profile_id' : profile_id})
+        this_actual_rate = actual_rate[0]['rate']
+        print(f'This is the actual rate: {actual_rate}')
+        raters_ids = []
+        for rater_id in all_raters_id:
+            raters_ids.append(rater_id['rater_id'])
+        return render_template('view_profile.html', user = logged_user, rides = created_rides, profile = user_profile, comments = comments, rate = rate, raters_ids = raters_ids, actual_rate = this_actual_rate)
+    return render_template('login.html')
+
+
 @app.route('/home')
 def home():
     if 'user_id' in session:
@@ -25,6 +46,7 @@ def home():
 @app.route('/register')
 def register():
     return render_template('register.html')
+
 
 @app.route('/api/users/register', methods = ['POST'])
 def create_user():
@@ -40,10 +62,12 @@ def create_user():
         return jsonify({'errors' : 'success'})
     return jsonify({'errors' : errors})
 
+
 @app.route('/api/users')
 def get_all():
     all_users = User.get_all_users()
     return jsonify({'all_users' : all_users})
+
 
 @app.route('/api/users/login', methods = ['POST'])
 def login():
@@ -55,17 +79,6 @@ def login():
             return jsonify({'message' : "success"})
     return jsonify({'message' : "Error"})
 
-@app.route('/users/<int:profile_id>/view')
-def view_profile(profile_id):
-    if 'user_id' in session:
-        profile = User.get_by_id({'id' : profile_id})
-        if profile:
-            logged_user = User.get_by_id({'id' : session['user_id']})
-            rate = Rate.getAvgRate({'id' : profile_id})
-            comments = Comment.getAllByProfile({'id' : profile_id})
-            print("#"*30, comments, "#"*30)
-            return render_template('view_profile.html',user = logged_user, profile = profile, rate = rate, comments = comments)
-    return redirect('/')
 
 @app.route('/logout')
 def logout():
