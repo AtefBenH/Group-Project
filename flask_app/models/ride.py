@@ -152,7 +152,7 @@ class Ride:
             JOIN users ON rides.user_id = users.id 
             WHERE rides.from_location LIKE %(from_location)s 
             AND rides.to_location LIKE %(to_location)s
-            AND rides.when_time BETWEEN (%(when_time)s - INTERVAL '2' HOUR) AND (%(when_time)s + INTERVAL '2' HOUR)
+            AND rides.when_time BETWEEN (%(when_time)s - INTERVAL '12' HOUR) AND (%(when_time)s + INTERVAL '12' HOUR)
             AND rides.seats >0;
             """
         results = connectToMySQL(DATABASE).query_db(query, data)
