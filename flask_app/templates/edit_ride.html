@@ -161,12 +161,12 @@
         </section>       
     </div>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Added this script to update the seats up to 3 maximum -->
+    <!-- Added this script to update the seats up to 4 maximum -->
     <script>
         const seatsInput = document.getElementById("seats");
         const ReservedInput = document.getElementById("reservedSeats");
         const seatsReserved = parseInt(ReservedInput.innerText);
-        const dynamicMax = 3 - seatsReserved;
+        const dynamicMax = 4 - seatsReserved;
         seatsInput.dataset.max = dynamicMax;
         seatsInput.max = dynamicMax;
     </script>
