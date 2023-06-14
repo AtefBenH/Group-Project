@@ -119,86 +119,85 @@ function validateRide(){
             })
 }
 
-function findRide(){
+function findRide() {
     loginForm = document.getElementById('findRideForm');
 
     var formData = new FormData(loginForm);
 
     fetch('/api/rides/find', { method: 'POST', body: formData })
         .then(response => response.json())
-        .then(data => 
-            {
-                console.log(data);
-                error = document.getElementById('findRideErrorMessage');
-                error.innerHTML = ""
-                if (data.errors.length !=0){
-                    for (key in data.errors) {
-                        error.innerHTML += data.errors[key] + '<br>';
-                        if (data.errors[key] == "From Location Must Be At Least 2 Characters"){
-                            field = document.getElementById('from');
-                            // field.value = "";
-                            field.style.backgroundColor = "lightcoral";
-                        }
-                        if (data.errors[key] == "Destination Must Be At Least 2 Characters"){
-                            field = document.getElementById('to');
-                            // field.value = "";
-                            field.style.backgroundColor = "lightcoral";
-                        }
-                        if (data.errors[key] == "Ride Must Have A Date and Time"){
-                            field = document.getElementById('when');
-                            // field.value = "";
-                            field.style.backgroundColor = "lightcoral";
-                        }
-                        if (data.errors[key] == "Ride Must Have A Number Of Seats"){
-                            field = document.getElementById('seats');
-                            // field.value = "";
-                            field.style.backgroundColor = "lightcoral";
-                        }
+        .then(data => {
+            console.log(data);
+            error = document.getElementById('findRideErrorMessage');
+            error.innerHTML = ""
+            if (data.errors.length != 0) {
+                for (key in data.errors) {
+                    error.innerHTML += data.errors[key] + '<br>';
+                    if (data.errors[key] == "From Location Must Be At Least 2 Characters") {
+                        field = document.getElementById('from');
+                        // field.value = "";
+                        field.style.backgroundColor = "lightcoral";
+                    }
+                    if (data.errors[key] == "Destination Must Be At Least 2 Characters") {
+                        field = document.getElementById('to');
+                        // field.value = "";
+                        field.style.backgroundColor = "lightcoral";
+                    }
+                    if (data.errors[key] == "Ride Must Have A Date and Time") {
+                        field = document.getElementById('when');
+                        // field.value = "";
+                        field.style.backgroundColor = "lightcoral";
+                    }
+                    if (data.errors[key] == "Ride Must Have A Number Of Seats") {
+                        field = document.getElementById('seats');
+                        // field.value = "";
+                        field.style.backgroundColor = "lightcoral";
                     }
                 }
-                else {
-                    searchResultDiv = document.getElementById('searchResult');
-                    searchResultDiv.innerText="";
-                    var table = document.createElement("table");
-                    table.classList.add("table");
-                    table.classList.add("table-striped");
-                    table.classList.add("table-bordered");
-                    table.classList.add("text-center");
-                    searchResultDiv.appendChild(table);
-                    var thead = document.createElement("thead");
-                    thead.classList.add("bg-dark");
-                    thead.classList.add("text-light");
-                    table.appendChild(thead);
-                    var headerRow = document.createElement("tr");
-                    thead.appendChild(headerRow);
-                    var headerCell1 = document.createElement("th");
-                    headerCell1.textContent = "From";
-                    headerRow.appendChild(headerCell1);
-                    var headerCell2 = document.createElement("th");
-                    headerCell2.textContent = "To";
-                    headerRow.appendChild(headerCell2);
-                    var headerCell3 = document.createElement("th");
-                    headerCell3.textContent = "When";
-                    headerRow.appendChild(headerCell3);
-                    var headerCell4 = document.createElement("th");
-                    headerCell4.textContent = "Seats";
-                    headerRow.appendChild(headerCell4);
-                    var headerCell5 = document.createElement("th");
-                    headerCell5.textContent = "Driver";
-                    headerRow.appendChild(headerCell5);
-                    var headerCell6 = document.createElement("th");
-                    headerCell6.textContent = "Action";
-                    headerRow.appendChild(headerCell6);
-                    var tbody = document.createElement("tbody");
-                    table.appendChild(tbody);
-                    var rowData = ["From", "To", "When", "Seats", "Driver", "Action"];
-                    
-                    for (key in data.rides) {
-                        
+            }
+            else {
+                searchResultDiv = document.getElementById('searchResult');
+                searchResultDiv.innerText = "";
+                var table = document.createElement("table");
+                table.classList.add("table");
+                table.classList.add("table-striped");
+                table.classList.add("table-bordered");
+                table.classList.add("text-center");
+                searchResultDiv.appendChild(table);
+                var thead = document.createElement("thead");
+                thead.classList.add("bg-dark");
+                thead.classList.add("text-light");
+                table.appendChild(thead);
+                var headerRow = document.createElement("tr");
+                thead.appendChild(headerRow);
+                var headerCell1 = document.createElement("th");
+                headerCell1.textContent = "From";
+                headerRow.appendChild(headerCell1);
+                var headerCell2 = document.createElement("th");
+                headerCell2.textContent = "To";
+                headerRow.appendChild(headerCell2);
+                var headerCell3 = document.createElement("th");
+                headerCell3.textContent = "When";
+                headerRow.appendChild(headerCell3);
+                var headerCell4 = document.createElement("th");
+                headerCell4.textContent = "Seats";
+                headerRow.appendChild(headerCell4);
+                var headerCell5 = document.createElement("th");
+                headerCell5.textContent = "Driver";
+                headerRow.appendChild(headerCell5);
+                var headerCell6 = document.createElement("th");
+                headerCell6.textContent = "Action";
+                headerRow.appendChild(headerCell6);
+                var tbody = document.createElement("tbody");
+                table.appendChild(tbody);
+                var rowData = ["From", "To", "When", "Seats", "Driver", "Action"];
+
+                for (key in data.rides) {
+                    if (data.rides[key].user_id != data.user_id) {
                         var dataRow = document.createElement("tr");
                         for (var i = 0; i < rowData.length; i++) {
                             var cell = document.createElement("td");
-                            cell.classList.add('cell-'+key+i)
+                            cell.classList.add('cell-' + key + i)
                             switch (i) {
                                 case 0:
                                     cell.textContent = data.rides[key].from_location;
@@ -224,19 +223,19 @@ function findRide(){
                                     break;
                                 case 5:
                                     found = false;
-                                    if (data.created_rides.length>0){
-                                        
-                                        for (var j = 0; j < data.created_rides.length; j++){
-                                            if (data.rides[key].id == data.created_rides[j].id){
+                                    if (data.created_rides.length > 0) {
+
+                                        for (var j = 0; j < data.created_rides.length; j++) {
+                                            if (data.rides[key].id == data.created_rides[j].id) {
                                                 cell.textContent = "Drive Safe";
                                                 found = true;
                                                 break;
                                             }
                                         }
                                     }
-                                    if(data.joined_rides.length>0){
-                                        for (var j = 0; j < data.joined_rides.length; j++){
-                                            if (data.rides[key].id == data.joined_rides[j]){
+                                    if (data.joined_rides.length > 0) {
+                                        for (var j = 0; j < data.joined_rides.length; j++) {
+                                            if (data.rides[key].id == data.joined_rides[j]) {
                                                 var cancelButton = document.createElement('button');
                                                 cancelButton.setAttribute("data-value1", data.rides[key].id);
                                                 cancelButton.setAttribute("data-value2", key);
@@ -251,7 +250,7 @@ function findRide(){
                                             }
                                         }
                                     }
-                                    if(found){
+                                    if (found) {
                                         break;
                                     }
                                     else {
@@ -266,17 +265,19 @@ function findRide(){
                                         cell.appendChild(reserveButton);
                                         break;
                                     }
-                                    
-                    
+
+
                             }
-                            
+
                             dataRow.appendChild(cell);
                         }
                         tbody.appendChild(dataRow);
                     }
-                    loginForm.reset();
                 }
-            })
+
+                loginForm.reset();
+            }
+        })
 }
 
 function cancelSeat(element){
