@@ -17,6 +17,31 @@ class Rate:
         return connectToMySQL(DATABASE).query_db(query, data)
     
     @classmethod
+    def get_profile_raters_id(cls, data):
+        query = """
+            SELECT rater_id FROM rates 
+            WHERE profile_id = %(profile_id)s;
+        """
+        return connectToMySQL(DATABASE).query_db(query, data)
+    
+    @classmethod
+    def get_rater_profile_rate(cls, data):
+        query = """
+            SELECT rate FROM rates 
+            WHERE rater_id = %(rater_id)s AND profile_id = %(profile_id)s;
+        """
+        return connectToMySQL(DATABASE).query_db(query, data)
+    
+    @classmethod
+    def updaterate(cls, data):
+        query = """
+            UPDATE rates SET 
+            rate = %(rate)s
+            WHERE rater_id = %(rater_id)s AND profile_id = %(profile_id)s;
+        """
+        return connectToMySQL(DATABASE).query_db(query, data)
+    
+    @classmethod
     def getAvgRate(cls, data):
         query = "SELECT AVG(rate) AS rate FROM rates where profile_id =  %(id)s;"
         rate = connectToMySQL(DATABASE).query_db(query, data)
