@@ -98,11 +98,11 @@
                                 <form action="/rates/update/{{profile.id}}/{{user.id}}" method="POST">
                                     <label for="rate" class="form-control form-control-sm">Update your rate:</label>
                                     <select name="rate" id="rate" class="form-control form-control-sm">
-                                        <option value="1" {% if rate == 1 %}selected{% endif %}>1</option>
-                                        <option value="2" {% if rate == 2 %}selected{% endif %}>2</option>
-                                        <option value="3" {% if rate == 3 %}selected{% endif %}>3</option>
-                                        <option value="4" {% if rate == 4 %}selected{% endif %}>4</option>
-                                        <option value="5" {% if rate == 5 %}selected{% endif %}>5</option>
+                                        <option value="1" {% if actual_rate == 1 %}selected{% endif %}>1</option>
+                                        <option value="2" {% if actual_rate == 2 %}selected{% endif %}>2</option>
+                                        <option value="3" {% if actual_rate == 3 %}selected{% endif %}>3</option>
+                                        <option value="4" {% if actual_rate == 4 %}selected{% endif %}>4</option>
+                                        <option value="5" {% if actual_rate == 5 %}selected{% endif %}>5</option>
                                     </select>
                                     <button type="submit" class="btn btn-md btn-outline-success mt-3">Rate</button>
                                 </form>
