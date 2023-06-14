@@ -13,6 +13,7 @@ def ride_form():
         return render_template('form_ride.html', user = logged_user)
     return redirect('/')
 
+
 @app.route('/api/rides/', methods=['POST'])
 def create_ride():
     if 'user_id' in session:
@@ -23,6 +24,7 @@ def create_ride():
         return jsonify({'errors' : errors})
     return redirect('/')
 
+
 @app.route('/api/my_created_rides')
 def my_created_rides():
     if 'user_id' in session:
@@ -30,6 +32,7 @@ def my_created_rides():
         created_rides = Ride.get_created_rides({'id' : session['user_id']})
         return render_template('created_rides.html', user = logged_user, rides = created_rides)
     return redirect('/')
+
 
 @app.route('/my_rides')
 def show_rides():
@@ -39,6 +42,7 @@ def show_rides():
         user_rides_id = Join_ride.get_rides_id_for_user({'id' : session['user_id']})
         return render_template('my_rides.html', created_rides = created_rides, user = logged_user, user_rides_id=user_rides_id)
     return redirect('/')
+
 
 @app.route('/rides/<int:ride_id>/view')
 def view_ride(ride_id):
@@ -50,6 +54,7 @@ def view_ride(ride_id):
             passengers = Ride.get_passengers({'id' : ride_id})
             return render_template('view_ride.html', ride = ride, user = logged_user, creator=creator, passengers=passengers)
     return redirect('/')
+
 
 @app.route('/rides/<int:ride_id>/edit')
 def edit_ride(ride_id):
@@ -73,6 +78,7 @@ def edit_ride(ride_id):
             return render_template('404.html')
     return redirect('/')
 
+
 @app.route('/rides/<int:ride_id>/update', methods = ['POST'])
 def update_ride(ride_id):
     if 'user_id' in session:
@@ -85,6 +91,7 @@ def update_ride(ride_id):
         Ride.update(data)
         return jsonify({'errors' : []})
     return redirect('/')
+
 
 @app.route('/rides/<int:ride_id>/delete')
 def delete_ride(ride_id):
@@ -101,6 +108,7 @@ def delete_ride(ride_id):
             return render_template('404.html')
     return redirect('/')
 
+
 @app.route('/api/rides/find')
 def find():
     if 'user_id' in session:
@@ -108,7 +116,8 @@ def find():
         return render_template('find_ride.html', user=logged_user)
     else:
         return redirect('/')
-    
+
+
 @app.route('/api/rides/find', methods = ['POST'])
 def find_rides():
     if 'user_id' in session:
@@ -126,6 +135,7 @@ def find_rides():
         return jsonify({'errors' : errors})
     return redirect('/')
 
+
 @app.route('/search', methods=['POST'])
 def search():
     if 'user_id' in session:
@@ -140,9 +150,9 @@ def search():
             rides = Ride.search(data)
         else :
             rides = Ride.searchByDriver({'search':search})
-            print('"'*30, rides[0].from_location, '"'*30)
         return render_template('search.html', rides = rides, user = logged_user)
     return redirect('/')
+
 
 
 

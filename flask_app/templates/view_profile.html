@@ -107,9 +107,6 @@
                                     <button type="submit" class="btn btn-md btn-outline-success mt-3">Rate</button>
                                 </form>
                                 {% else %}
-                                <p class="text-primary">this is user id: {{user.id}}</p>
-                                <p class="text-primary">this is list of raters id: {{raters_ids}}</p>
-                                <p class="text-primary">this is the actual rate: {{actual_rate}}</p>
                                 <form action="/rates/create/{{profile.id}}/{{user.id}}" method="POST">
                                     <label for="rate" class="form-control form-control-sm">Rate Him :</label>
                                     <select name="rate" id="rate" class="form-control form-control-sm">
