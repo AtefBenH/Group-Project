@@ -26,8 +26,10 @@ def view_profile(profile_id):
         rate = Rate.getAvgRate({'id' : profile_id})
         all_raters_id = Rate.get_profile_raters_id({'profile_id' : profile_id})
         actual_rate = Rate.get_rater_profile_rate({'rater_id' : session['user_id'], 'profile_id' : profile_id})
-        this_actual_rate = actual_rate[0]['rate']
-        print(f'This is the actual rate: {actual_rate}')
+        if actual_rate[0]['rate']:
+            this_actual_rate = actual_rate[0]['rate']
+        else:
+            this_actual_rate = None
         raters_ids = []
         for rater_id in all_raters_id:
             raters_ids.append(rater_id['rater_id'])
