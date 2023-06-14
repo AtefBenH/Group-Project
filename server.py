@@ -1,6 +1,6 @@
 from flask_app import app
 from flask_cors import CORS
-from flask_app.controllers import users, rides, join_rides
+from flask_app.controllers import users, rides, join_rides, rates, comments
 from flask import request, render_template
 
 CORS(app)

@@ -326,7 +326,6 @@ function reserveSeat(element){
             });
 }
 
-
 // Edited this function to make it work with the form "editRideForm"
 function updateRide(ride_id) {
     updateForm = document.getElementById('editRideForm');
@@ -370,56 +369,10 @@ function updateRide(ride_id) {
         })
 }
 
-
-function createLike(element) {
-    let book_id = element.value;
-    fetch("/likes/" + book_id + "/create")
-        .then(response => response.json())
-        .then(data => {
-            // let newElement = document.createElement("span");
-            // newElement.innerHTML = "This is one of your favorites";
-            // newElement.classList.add("fst-italic");
-            // element.replaceWith(newElement);
-            count = parseInt(document.getElementById('count').innerText);
-            document.getElementById('count').innerText = count + 1;
-        })
-    setTimeout(() => {
-        location.reload();
-    }, 500);
-}
-
-function deleteLike(element)
-    {
-        let book_id = element.value;
-        fetch("/likes/"+book_id+"/delete")
-        .then(response => response.json())
-        .then(data => {
-            if (data.message){
-                parent = element.parentNode;
-                parent.remove();
-                element.remove();
-                count = parseInt(document.getElementById('count').innerText);
-                document.getElementById('count').innerText = count-1;
-            }
-        })
-    }
-
-function deleteLikeReload(element) {
-    let book_id = element.value;
-    fetch("/likes/" + book_id + "/delete")
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) {
-                // parent = element.parentNode;
-                // parent.remove();
-                // element.remove();
-                count = parseInt(document.getElementById('count').innerText);
-                document.getElementById('count').innerText = count - 1;
-            }
-        })
-        setTimeout(() => {
-            location.reload();
-        }, 500);
+function viewProfile(element){
+    profile_id = element.getAttribute("data-value1");
+    console.log(profile_id);
+    window.location.replace('/users/'+profile_id+'/view')
 }
 
 function addComment()
@@ -439,7 +392,7 @@ function addComment()
                     }
                 else 
                     {
-                        window.location.replace('/books/'+data.status+'/view');
+                        window.location.replace('/users/'+data.status+'/view');
                     }
             });
     }
@@ -485,7 +438,7 @@ function changeComment(element) {
 
             }
             else {
-                window.location.replace('/books/' + data.status + '/view')
+                window.location.replace('/users/' + data.status + '/view')
             }
 
         }).catch(error => {

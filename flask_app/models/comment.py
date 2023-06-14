@@ -37,7 +37,7 @@ class Comment:
         query = """
             SELECT * FROM users
             JOIN comments ON users.id = comments.poster_id 
-            WHERE comments.profile_id = %(profile_id)s;
+            WHERE comments.profile_id = %(id)s;
         """
         return connectToMySQL(DATABASE).query_db(query, data)
     

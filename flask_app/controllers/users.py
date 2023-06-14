@@ -1,6 +1,8 @@
 from flask_app import app
 from flask import render_template, redirect, request, session, jsonify
 from flask_app.models.user import User
+from flask_app.models.rate import Rate
+from flask_app.models.comment import Comment
 from flask_bcrypt import Bcrypt
 
 bcrypt = Bcrypt(app)
@@ -32,7 +34,7 @@ def create_user():
     if len(errors)==0:
         hashed_password = bcrypt.generate_password_hash(request.form['password'])
         data = {
-                **data, 'password':hashed_password
+                **request.form, 'password':hashed_password
             }
         session['user_id'] = User.save(data)
         return jsonify({'errors' : 'success'})
@@ -52,6 +54,18 @@ def login():
             session['user_id'] = user_from_db.id
             return jsonify({'message' : "success"})
     return jsonify({'message' : "Error"})
+
+@app.route('/users/<int:profile_id>/view')
+def view_profile(profile_id):
+    if 'user_id' in session:
+        profile = User.get_by_id({'id' : profile_id})
+        if profile:
+            logged_user = User.get_by_id({'id' : session['user_id']})
+            rate = Rate.getAvgRate({'id' : profile_id})
+            comments = Comment.getAllByProfile({'id' : profile_id})
+            print("#"*30, comments, "#"*30)
+            return render_template('view_profile.html',user = logged_user, profile = profile, rate = rate, comments = comments)
+    return redirect('/')
 
 @app.route('/logout')
 def logout():
