@@ -181,6 +181,11 @@ class Ride:
         rides = []
         for row in results:
             ride = cls(row)
+            ride.driver = {'id' : row['user_id'],
+                                'first_name' : row['first_name'],
+                                'last_name' : row['last_name'],
+                                'email' : row['email']
+                            }
             rides.append(ride)
         return rides
     
@@ -195,5 +200,10 @@ class Ride:
         rides = []
         for row in results:
             ride = cls(row)
+            ride.driver = {'id' : row['user_id'],
+                                'first_name' : row['first_name'],
+                                'last_name' : row['last_name'],
+                                'email' : row['email']
+                            }
             rides.append(ride)
         return rides

@@ -95,6 +95,7 @@
                         <th>To</th>
                         <th>When</th>
                         <th>Seats</th>
+                        <th>Driver</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -105,6 +106,7 @@
                         <th> {{ ride.to_location }} </th>
                         <th> {{ ride.when_time }} </th>
                         <th> {{ ride.seats }} </th>
+                        <th> {{ ride.driver['first_name'] }} {{ ride.driver['last_name'] }}</th>
                         <th> 
                             
                         </th>
