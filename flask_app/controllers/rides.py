@@ -5,16 +5,6 @@ from flask_app.models.ride import Ride
 from flask_app.models.join_ride import Join_ride
 from datetime import datetime
 
-# @app.route('/dashboard')
-# def dashboard():
-#     if 'user_id' in session:
-#         all_rides = Ride.get_all()
-#         if all_rides == 'No rides Yet' :
-#             all_rides=[]
-#         logged_user = User.get_by_id({'id' : session['user_id']})
-#         user_rides_id = Join_ride.get_rides_id_for_user({'id' : session['user_id']})
-#         return render_template('dashboard.html', user = logged_user, all_rides = all_rides, user_rides_id = user_rides_id)
-#     return redirect('/')
 
 @app.route('/api/rides')
 def ride_form():
@@ -134,6 +124,24 @@ def find_rides():
             created_rides = Ride.get_created_rides({'id' : session['user_id']})
             return jsonify({'errors' : [], 'user_id' : session['user_id'], 'rides' : rides, 'joined_rides' : joined_rides, 'created_rides' : created_rides})
         return jsonify({'errors' : errors})
+    return redirect('/')
+
+@app.route('/search', methods=['POST'])
+def search():
+    if 'user_id' in session:
+        logged_user = User.get_by_id({'id':session['user_id']})
+        search = f"%%{request.form['search']}%%"
+        
+        data = {
+            'filter' : request.form['filter'],
+            'search' : search
+        }
+        if request.form['filter']!="driver":
+            rides = Ride.search(data)
+        else :
+            rides = Ride.searchByDriver({'search':search})
+            print('"'*30, rides[0].from_location, '"'*30)
+        return render_template('search.html', rides = rides, user = logged_user)
     return redirect('/')
 
 
