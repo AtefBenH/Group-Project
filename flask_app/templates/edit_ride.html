@@ -143,11 +143,12 @@
                                         <a href="/join_rides/{{passenger.id}}/{{ride.id}}/delete" class="btn btn-danger">remove</a>
                                     {% endfor %}
                                 </div>
+                                
                                 <div class="form-outline mb-4">
                                     <p class="form-label-lg">Reserved Seats: {{ passengers|length }}</p>
                                     <label for="seats" class="form-label-lg">Remain Seats:</label>
                                     <input name="seats" type="number" id="seats" class="form-control form-control-lg"
-                                        placeholder="Seats" min="0" max="{{ride.seats}}" value="{{ride.seats}}"/>
+                                        placeholder="Seats" min="0" data-max="" value="{{ride.seats}}"/>
                                 </div>
                                 <div class="text-center text-md-start">
                                     <button type="button" class="btn btn-primary btn-md"
@@ -157,7 +158,16 @@
                     </div>
                 </div>
             </div>
-        </section>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        
+        </section>       
     </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Added this script to change the seats up to 3 maximum -->
+    <script>
+        const seatsInput = document.getElementById("seats");
+        const rideSeats = parseInt(seatsInput.value);
+        const dynamicMax = 3 - rideSeats;
+        seatsInput.dataset.max = dynamicMax;
+        seatsInput.max = dynamicMax;
+    </script>
+</body>
+</html>
