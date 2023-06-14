@@ -150,7 +150,7 @@ def search():
             rides = Ride.search(data)
         else :
             rides = Ride.searchByDriver({'search':search})
-        return render_template('search.html', rides = rides, user = logged_user)
+        return render_template('search.html', rides = rides, user = logged_user, data = request.form)
     return redirect('/')
 
 

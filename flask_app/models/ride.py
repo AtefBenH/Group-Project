@@ -176,7 +176,7 @@ class Ride:
     #!SEARCH ride BY FILTER (TITLE, AUTHOR, DESCRIPTION)
     @classmethod
     def search(cls, data):
-        query = "SELECT * FROM rides WHERE {filter} LIKE %(search)s;"
+        query = "SELECT * FROM rides JOIN users ON users.id = rides.user_id WHERE {filter} LIKE %(search)s;"
         results = connectToMySQL(DATABASE).query_db(query.format(filter=data['filter']), data)
         rides = []
         for row in results:
@@ -200,6 +200,10 @@ class Ride:
         rides = []
         for row in results:
             ride = cls(row)
-            ride.driver = f""
+            ride.driver = {'id' : row['user_id'],
+                                'first_name' : row['first_name'],
+                                'last_name' : row['last_name'],
+                                'email' : row['email']
+                            }
             rides.append(ride)
         return rides

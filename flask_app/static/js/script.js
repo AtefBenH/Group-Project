@@ -3,6 +3,17 @@ async function refresh()
         location.reload();
     }
 
+function changeInput(element){
+    if(element.value == 'when_time'){
+        inputDate = document.createElement('input');
+        inputDate.setAttribute('name', 'search');
+        inputDate.setAttribute('class', 'form-control me-2');
+        inputDate.setAttribute('type', 'date');
+        oldInput = document.getElementById('search');
+        oldInput.replaceWith(inputDate);
+    }
+}
+
 function login()
     {
         loginForm = document.getElementById('loginForm');
