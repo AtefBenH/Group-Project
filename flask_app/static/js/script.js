@@ -194,6 +194,7 @@ function findRide(){
                     var rowData = ["From", "To", "When", "Seats", "Driver", "Action"];
                     
                     for (key in data.rides) {
+                        
                         var dataRow = document.createElement("tr");
                         for (var i = 0; i < rowData.length; i++) {
                             var cell = document.createElement("td");
@@ -446,5 +447,3 @@ function changeComment(element) {
             element.previousSibling.value = content;
         });
 }
-
-    

@@ -126,7 +126,7 @@ def find_rides():
             data = {
                 'from_location' : f"%%{request.form['from_location']}%%", 
                 'to_location' : f"%%{request.form['to_location']}%%", 
-                'when_time' : f"%%{datetime.strptime(request.form['when_time'], '%Y-%m-%dT%H:%M')}%%"
+                'when_time' : {datetime.strptime(request.form['when_time'], '%Y-%m-%dT%H:%M')}
             }
             rides = Ride.findRides(data)
             joined_rides = Join_ride.get_rides_id_for_user({'id' : session['user_id']})
