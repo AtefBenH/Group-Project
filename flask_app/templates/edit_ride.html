@@ -145,7 +145,7 @@
                                 </div>
                                 
                                 <div class="form-outline mb-4">
-                                    <p class="form-label-lg">Reserved Seats: {{ passengers|length }}</p>
+                                    <p class="form-label-lg">Reserved Seats: <span id="reservedSeats">{{ passengers|length }}</span></p>
                                     <label for="seats" class="form-label-lg">Remain Seats:</label>
                                     <input name="seats" type="number" id="seats" class="form-control form-control-lg"
                                         placeholder="Seats" min="0" data-max="" value="{{ride.seats}}"/>
@@ -161,11 +161,12 @@
         </section>       
     </div>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Added this script to change the seats up to 3 maximum -->
+    <!-- Added this script to update the seats up to 3 maximum -->
     <script>
         const seatsInput = document.getElementById("seats");
-        const rideSeats = parseInt(seatsInput.value);
-        const dynamicMax = 3 - rideSeats;
+        const ReservedInput = document.getElementById("reservedSeats");
+        const seatsReserved = parseInt(ReservedInput.innerText);
+        const dynamicMax = 3 - seatsReserved;
         seatsInput.dataset.max = dynamicMax;
         seatsInput.max = dynamicMax;
     </script>
