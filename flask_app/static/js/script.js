@@ -225,6 +225,7 @@ function findRide() {
                                 case 4:
                                     var profileLink = document.createElement('button');
                                     profileLink.setAttribute("data-value1", data.rides[key].user_id);
+                                    profileLink.setAttribute("data-value2", data.rides[key].id);
                                     profileLink.classList.add("btn");
                                     profileLink.classList.add("btn-sm");
                                     profileLink.classList.add("btn-outline-dark");
@@ -384,15 +385,15 @@ function updateRide(ride_id) {
 
 function viewProfile(element){
     profile_id = element.getAttribute("data-value1");
-    console.log(profile_id);
-    window.location.replace('/users/'+profile_id+'/view')
+    ride_id = element.getAttribute("data-value2");
+    window.location.replace('/users/view/'+profile_id+'/'+ride_id);
 }
 
 function addComment()
     {
         commentForm = document.getElementById('formComment');
         var formData = new FormData(commentForm);
-
+        console.log(formData);
         fetch("/comments/create", { method: 'POST', body: formData })
             .then(response => response.json())
             .then(data => {
@@ -458,4 +459,26 @@ function changeComment(element) {
             element.previousSibling.style.backgroundColor = "lightcoral";
             element.previousSibling.value = content;
         });
+}
+
+function sendMessage(element){
+    profile_id = element.getAttribute("data-value1");
+    console.log(profile_id);
+    messageForm = document.getElementById('messageForm');
+    var formData = new FormData(messageForm);
+    console.log(formData);
+    fetch("/messages/"+profile_id+"/send", { method: 'POST', body: formData })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        if (data.status == "Fail") {
+            errorField = document.getElementById('messageErrorMessage');
+            errorField.innerText = "Message must contain at least 5 characters";
+            commentField = document.getElementById('message-text');
+            commentField.style.backgroundColor = "lightcoral";
+        }
+        else {
+            window.location.reload();
+        }
+    });
 }

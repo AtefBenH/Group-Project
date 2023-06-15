@@ -1,6 +1,5 @@
 from flask_app import app
 from flask import request, session, jsonify, redirect, render_template
-from flask_app.models.user import User
 from flask_app.models.comment import Comment
 
 

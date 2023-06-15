@@ -106,7 +106,7 @@
                         <th> {{ ride.to_location }} </th>
                         <th> {{ ride.when_time }} </th>
                         <th> {{ ride.seats }} </th>
-                        <th> {{ ride.driver['first_name'] }} {{ ride.driver['last_name'] }}</th>
+                        <th><button class="btn btn-link" data-value1 = "{{ride.driver['id']}}" data-value2 = "{{ride.id}}" onclick="viewProfile(this)">{{ ride.driver['first_name'] }} {{ ride.driver['last_name'] }}</button></th>
                         <th> 
                             
                         </th>

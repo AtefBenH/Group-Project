@@ -16,8 +16,8 @@ def index():
     return render_template('login.html')
 
 
-@app.route('/users/<int:profile_id>/view')
-def view_profile(profile_id):
+@app.route('/users/view/<int:profile_id>/<int:ride_id>')
+def view_profile(profile_id, ride_id):
     if 'user_id' in session:
         logged_user = User.get_by_id({'id' : session['user_id']})
         user_profile = User.get_by_id({'id' : profile_id})
@@ -33,7 +33,7 @@ def view_profile(profile_id):
         raters_ids = []
         for rater_id in all_raters_id:
             raters_ids.append(rater_id['rater_id'])
-        return render_template('view_profile.html', user = logged_user, rides = created_rides, profile = user_profile, comments = comments, rate = rate, raters_ids = raters_ids, actual_rate = this_actual_rate)
+        return render_template('view_profile.html', user = logged_user, ride_id = ride_id, rides = created_rides, profile = user_profile, comments = comments, rate = rate, raters_ids = raters_ids, actual_rate = this_actual_rate)
     return render_template('login.html')
 
 

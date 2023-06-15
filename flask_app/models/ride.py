@@ -1,6 +1,6 @@
 from flask_app.config.mysqlconnection import connectToMySQL
 from flask_app import DATABASE
-from flask_app.models import user, ride
+from flask_app.models import user
 
 class Ride:
     def __init__(self , data ):

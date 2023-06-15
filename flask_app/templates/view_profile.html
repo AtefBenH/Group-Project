@@ -89,13 +89,25 @@
             <div class="col-7 d-flex justify-content-between">
                 <div class="card" style="width: 35rem;">
                     <div class="card-body">
-                        <h4 class="card-title">{{ profile.first_name }}'s' Profile</h4>
+                        <div class="d-flex justify-content-between">
+                            <h4 class="card-title">{{ profile.first_name }}'s Profile</h4>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-messenger"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M0 7.76C0 3.301 3.493 0 8 0s8 3.301 8 7.76-3.493 7.76-8 7.76c-.81 0-1.586-.107-2.316-.307a.639.639 0 0 0-.427.03l-1.588.702a.64.64 0 0 1-.898-.566l-.044-1.423a.639.639 0 0 0-.215-.456C.956 12.108 0 10.092 0 7.76zm5.546-1.459-2.35 3.728c-.225.358.214.761.551.506l2.525-1.916a.48.48 0 0 1 .578-.002l1.869 1.402a1.2 1.2 0 0 0 1.735-.32l2.35-3.728c.226-.358-.214-.761-.551-.506L9.728 7.381a.48.48 0 0 1-.578.002L7.281 5.98a1.2 1.2 0 0 0-1.735.32z">
+                                    </path>
+                                </svg>
+                                Send Message
+                            </button>
+                        </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item text-danger-emphasis fw-bold">Full Name : {{ profile.first_name}} {{ profile.last_name }}</li>
                             <li class="list-group-item text-danger-emphasis fw-bold">Average Rate: {{ rate }}</li>
                             <li class="list-group-item text-danger-emphasis fw-bold">
                                 {% if user.id in raters_ids %}
                                 <form action="/rates/update/{{profile.id}}/{{user.id}}" method="POST">
+                                    <input name="ride_id" type="hidden" value="{{ride_id}}">
                                     <label for="rate" class="form-control form-control-sm">Update your rate:</label>
                                     <select name="rate" id="rate" class="form-control form-control-sm">
                                         <option value="1" {% if actual_rate == 1 %}selected{% endif %}>1</option>
@@ -108,7 +120,8 @@
                                 </form>
                                 {% else %}
                                 <form action="/rates/create/{{profile.id}}/{{user.id}}" method="POST">
-                                    <label for="rate" class="form-control form-control-sm">Rate Him :</label>
+                                    <input name="ride_id" type="hidden" value="{{ride_id}}">
+                                    <label for="rate" class="form-control form-control-sm">Rate Him/Her :</label>
                                     <select name="rate" id="rate" class="form-control form-control-sm">
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -126,6 +139,7 @@
             </div>
 
             <div class="col-5">
+                <h5>Add Comment:</h5>
                 <div id="commentErrorMessage" class="text-bg-danger text-center mb-3"></div>
                 <form id="formComment">
                     <textarea name="comment" id="area_comment" class="form-control form-control-sm" 
@@ -178,6 +192,33 @@
         </div>
         <div class="offcanvas-body">
             <div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="messageErrorMessage" class="text-bg-danger text-center mb-3"></div>
+                    <form id="messageForm">
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Recipient:</label>
+                            <input type="text" disabled class="form-control" id="recipient-name" value="{{ profile.first_name }} {{ profile.last_name }}">
+                        </div>
+                        <div class="mb-3">
+                            <input name = "ride_id" type="hidden" value="{{ ride_id }}">
+                            <label for="message-text" class="col-form-label">Message:</label>
+                            <textarea name="message" class="form-control" id="message-text"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-value1="{{ profile.id }}" onclick="sendMessage(this)">Send message</button>
+                </div>
             </div>
         </div>
     </div>
