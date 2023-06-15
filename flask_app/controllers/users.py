@@ -4,6 +4,7 @@ from flask_app.models.user import User
 from flask_app.models.ride import Ride
 from flask_app.models.rate import Rate
 from flask_app.models.comment import Comment
+from flask_app.models.message import Message
 from flask_bcrypt import Bcrypt
 
 bcrypt = Bcrypt(app)
@@ -15,6 +16,9 @@ def index():
         return redirect('/home')
     return render_template('login.html')
 
+@app.route('/users/view/<int:profile_id>')
+def view_own_profile(profile_id):
+    pass
 
 @app.route('/users/view/<int:profile_id>/<int:ride_id>')
 def view_profile(profile_id, ride_id):
@@ -41,7 +45,10 @@ def view_profile(profile_id, ride_id):
 def home():
     if 'user_id' in session:
         logged_user = User.get_by_id({'id' : session['user_id']})
-        return render_template('home.html', user = logged_user)
+        countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
+        actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
+        print(actifMessages)
+        return render_template('home.html', user = logged_user, countMessages = countMessages, messages = actifMessages)
     return render_template('login.html')
 
 

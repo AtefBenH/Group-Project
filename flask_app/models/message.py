@@ -32,5 +32,15 @@ class Message:
     
     @classmethod
     def showActifMessagesForUser(cls, data):
-        query = "SELECT * FROM messages WHERE receiver_id = %(id)s AND status = 1;"
+        query = """SELECT * FROM users 
+        JOIN messages ON messages.sender_id = users.id
+        WHERE receiver_id = %(id)s AND status = 1;"""
         return connectToMySQL(DATABASE).query_db(query, data)
+    
+    @classmethod
+    def countActifMessagesForUser(cls, data):
+        query = "SELECT Count(*) AS numbMessages FROM messages WHERE receiver_id = %(id)s AND status = 1;"
+        result = connectToMySQL(DATABASE).query_db(query, data)
+        if result[0]['numbMessages']>0 :
+            return result[0]['numbMessages']
+        return 0

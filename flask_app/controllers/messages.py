@@ -6,7 +6,6 @@ from flask_app.models.message import Message
 def sendMessage(profile_id):
     if 'user_id' in session:
         status = 'Fail'
-        print("#"*30, request.form['message'], "#"*30)
         if Message.validate(request.form):
             data = {
                 'sender_id' : session['user_id'],

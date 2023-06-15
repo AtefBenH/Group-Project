@@ -102,10 +102,10 @@ def delete_ride(ride_id):
             if ride_to_delete.user_id == session['user_id'] :
                 passengers = Ride.get_passengers({'id' : ride_id})
                 for passenger in passengers:
-                    message_to_send = f"""This Ride Has Been Cancelled For You :
+                    message_to_send = f"""This Ride Has Been Cancelled For You By The Driver :
                     From : {ride_to_delete.from_location}
                     To : {ride_to_delete.to_location}
-                    When : {ride_to_delete.when_time}
+                    At : {ride_to_delete.when_time}
                     """
                     message_data = {
                         'sender_id' : session['user_id'],
