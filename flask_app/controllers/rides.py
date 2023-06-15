@@ -11,7 +11,9 @@ from datetime import datetime
 def ride_form():
     if 'user_id' in session:
         logged_user = User.get_by_id({'id' : session['user_id']})
-        return render_template('form_ride.html', user = logged_user)
+        countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
+        actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
+        return render_template('form_ride.html', user = logged_user, countMessages=countMessages, messages=actifMessages)
     return redirect('/')
 
 
@@ -31,7 +33,9 @@ def my_created_rides():
     if 'user_id' in session:
         logged_user = User.get_by_id({'id' : session['user_id']})
         created_rides = Ride.get_created_rides({'id' : session['user_id']})
-        return render_template('created_rides.html', user = logged_user, rides = created_rides)
+        countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
+        actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
+        return render_template('created_rides.html', user = logged_user, rides = created_rides, countMessages=countMessages, messages=actifMessages)
     return redirect('/')
 
 
@@ -53,7 +57,9 @@ def view_ride(ride_id):
             logged_user = User.get_by_id({'id' : session['user_id']})
             creator = User.get_by_id({'id' : ride.user_id})
             passengers = Ride.get_passengers({'id' : ride_id})
-            return render_template('view_ride.html', ride = ride, user = logged_user, creator=creator, passengers=passengers)
+            countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
+            actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
+            return render_template('view_ride.html',countMessages=countMessages, messages=actifMessages, ride = ride, user = logged_user, creator=creator, passengers=passengers)
     return redirect('/')
 
 
@@ -62,6 +68,8 @@ def edit_ride(ride_id):
     if 'user_id' in session:
         ride = Ride.get_by_id({'id' : ride_id})
         logged_user = User.get_by_id({'id' : session['user_id']})
+        countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
+        actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
         try:
             joined_rides = User.get_user_with_rides({'id' : session['user_id']})
         except:
@@ -72,7 +80,7 @@ def edit_ride(ride_id):
             passengers = []
         if ride:
             if ride.user_id == session['user_id'] :
-                return render_template('edit_ride.html',joined_rides=joined_rides, ride = ride, user=logged_user, passengers=passengers)
+                return render_template('edit_ride.html',countMessages=countMessages, messages=actifMessages,joined_rides=joined_rides, ride = ride, user=logged_user, passengers=passengers)
             else :
                 return redirect('/')
         else :
@@ -128,7 +136,9 @@ def delete_ride(ride_id):
 def find():
     if 'user_id' in session:
         logged_user = User.get_by_id({'id' : session['user_id']})
-        return render_template('find_ride.html', user=logged_user)
+        countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
+        actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
+        return render_template('find_ride.html', user=logged_user, countMessages=countMessages, messages=actifMessages)
     else:
         return redirect('/')
 
@@ -157,7 +167,8 @@ def search():
         logged_user = User.get_by_id({'id':session['user_id']})
         joinedRidesIds = Join_ride.get_rides_id_for_user({'id':session['user_id']})
         createdRidesIds = Ride.get_created_rides_id({'user_id' : session['user_id']})
-        print("-"*30, createdRidesIds, "-"*30)
+        countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
+        actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
         search = f"%%{request.form['search']}%%"
         
         data = {
@@ -168,7 +179,7 @@ def search():
             rides = Ride.search(data)
         else :
             rides = Ride.searchByDriver({'search':search})
-        return render_template('search.html', rides = rides, user = logged_user, data = request.form, joinedRidesIds = joinedRidesIds, createdRidesIds=createdRidesIds)
+        return render_template('search.html',countMessages=countMessages, messages= actifMessages, rides = rides, user = logged_user, data = request.form, joinedRidesIds = joinedRidesIds, createdRidesIds=createdRidesIds)
     return redirect('/')
 
 

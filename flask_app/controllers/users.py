@@ -30,6 +30,8 @@ def view_profile(profile_id, ride_id):
         rate = Rate.getAvgRate({'id' : profile_id})
         all_raters_id = Rate.get_profile_raters_id({'profile_id' : profile_id})
         actual_rate = Rate.get_rater_profile_rate({'rater_id' : session['user_id'], 'profile_id' : profile_id})
+        countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
+        actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
         if actual_rate:
             this_actual_rate = actual_rate[0]['rate']
         else:
@@ -37,7 +39,7 @@ def view_profile(profile_id, ride_id):
         raters_ids = []
         for rater_id in all_raters_id:
             raters_ids.append(rater_id['rater_id'])
-        return render_template('view_profile.html', user = logged_user, ride_id = ride_id, rides = created_rides, profile = user_profile, comments = comments, rate = rate, raters_ids = raters_ids, actual_rate = this_actual_rate)
+        return render_template('view_profile.html', user = logged_user, ride_id = ride_id, rides = created_rides, profile = user_profile, comments = comments, rate = rate, raters_ids = raters_ids, actual_rate = this_actual_rate, countMessages=countMessages, messages=actifMessages)
     return render_template('login.html')
 
 
@@ -47,7 +49,6 @@ def home():
         logged_user = User.get_by_id({'id' : session['user_id']})
         countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
         actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
-        print(actifMessages)
         return render_template('home.html', user = logged_user, countMessages = countMessages, messages = actifMessages)
     return render_template('login.html')
 

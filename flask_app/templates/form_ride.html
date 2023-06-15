@@ -38,9 +38,9 @@
                                 <a class="nav-link" href="/api/my_created_rides">Created Rides</a>
                             </li>
                             <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
+                                <button type="button" class="btn btn-dark" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
                                 aria-controls="staticBackdrop">
-                                    Next Trips
+                                    Messages <span class="badge badge-danger">{{countMessages}}</span>
                                 </button>
                             </li>
                             <li class="nav-item dropdown">
@@ -154,6 +154,34 @@
                 </div>
             </div>
         </section>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        
     </div>
+    <div class="offcanvas offcanvas-start" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop"
+        aria-labelledby="staticBackdropLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="staticBackdropLabel">{{user.first_name}}'s Pending Messages</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" onclick="refresh()"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div>
+                {% if countMessages == 0 %}
+                    <p>No Pending Messages</p>
+                {% else %}
+                <ol>
+                    {% for message in messages%}
+                        <li class="mt-3">
+                            <p class="fw-bolder text-primary">From : {{ message.first_name }} {{ message.last_name }}</p>
+                            <p class="fw-medium text-danger-emphasis fs-5">{{ message.message }}</p>
+                            <p class="fw-medium"><span class="fst-italic">At :</span>{{ message['messages.created_at'] }}</p>
+                            <button class="btn btn-sm btn-outline-primary">Answer</button>
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                            <button class="btn btn-sm btn-outline-dark">Mark As Read</button>
+                        </li>
+                    {% endfor %}
+                </ol>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+    </html>
