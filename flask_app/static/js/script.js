@@ -6,9 +6,19 @@ async function refresh()
 function changeInput(element){
     if(element.value == 'when_time'){
         inputDate = document.createElement('input');
+        inputDate.setAttribute('id', 'search');
         inputDate.setAttribute('name', 'search');
         inputDate.setAttribute('class', 'form-control me-2');
         inputDate.setAttribute('type', 'date');
+        oldInput = document.getElementById('search');
+        oldInput.replaceWith(inputDate);
+    }
+    else{
+        inputDate = document.createElement('input');
+        inputDate.setAttribute('id', 'search');
+        inputDate.setAttribute('name', 'search');
+        inputDate.setAttribute('class', 'form-control me-2');
+        inputDate.setAttribute('type', 'text');
         oldInput = document.getElementById('search');
         oldInput.replaceWith(inputDate);
     }
@@ -295,6 +305,8 @@ function findRide() {
 function cancelSeat(element){
     rideId = element.getAttribute("data-value1");
     key = element.getAttribute("data-value2");
+    console.log('Ride Id : ', rideId)
+    console.log('Key : ', rideId)
     fetch("/join_rides/"+rideId+"/delete")
             .then(response => response.json())
             .then(data => {
@@ -312,7 +324,8 @@ function cancelSeat(element){
                 saveButton.setAttribute("onclick", "reserveSeat(this)");
                 saveButton.innerText = "Save";
                 cell = document.getElementsByClassName('cell-'+key+'5');
-                cell[0].childNodes[0].replaceWith(saveButton);
+                cell[0].innerHTML = "";
+                cell[0].appendChild(saveButton);
             });
 }
 
@@ -336,7 +349,8 @@ function reserveSeat(element){
                 cancelButton.classList.add("btn-outline-danger");
                 cancelButton.setAttribute("onclick", "cancelSeat(this)");
                 cancelButton.innerText = "Cancel";
-                cell[0].childNodes[0].replaceWith(cancelButton);
+                cell[0].innerHTML = "";
+                cell[0].appendChild(cancelButton);
             });
 }
 

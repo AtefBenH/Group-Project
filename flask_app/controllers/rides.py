@@ -2,6 +2,7 @@ from flask_app import app
 from flask import render_template, redirect, request, session, jsonify
 from flask_app.models.user import User
 from flask_app.models.ride import Ride
+from flask_app.models.message import Message
 from flask_app.models.join_ride import Join_ride
 from datetime import datetime
 
@@ -99,8 +100,22 @@ def delete_ride(ride_id):
         ride_to_delete = Ride.get_by_id({'id' : ride_id})
         if ride_to_delete:
             if ride_to_delete.user_id == session['user_id'] :
-                Join_ride.deleteByRide({'ride_id' : ride_id})
-                Ride.delete({'id' : ride_id})
+                passengers = Ride.get_passengers({'id' : ride_id})
+                for passenger in passengers:
+                    message_to_send = f"""This Ride Has Been Cancelled For You :
+                    From : {ride_to_delete.from_location}
+                    To : {ride_to_delete.to_location}
+                    When : {ride_to_delete.when_time}
+                    """
+                    message_data = {
+                        'sender_id' : session['user_id'],
+                        'receiver_id' : passenger.id,
+                        'message' : message_to_send,
+                        'ride_id' : ride_id
+                    }
+                    Message.send(message_data)
+                    Join_ride.deleteByRide({'ride_id' : ride_id})
+                    Ride.delete({'id' : ride_id})
                 return redirect('/api/my_created_rides')
             else:
                 return redirect('/')
@@ -140,6 +155,9 @@ def find_rides():
 def search():
     if 'user_id' in session:
         logged_user = User.get_by_id({'id':session['user_id']})
+        joinedRidesIds = Join_ride.get_rides_id_for_user({'id':session['user_id']})
+        createdRidesIds = Ride.get_created_rides_id({'user_id' : session['user_id']})
+        print("-"*30, createdRidesIds, "-"*30)
         search = f"%%{request.form['search']}%%"
         
         data = {
@@ -150,7 +168,7 @@ def search():
             rides = Ride.search(data)
         else :
             rides = Ride.searchByDriver({'search':search})
-        return render_template('search.html', rides = rides, user = logged_user, data = request.form)
+        return render_template('search.html', rides = rides, user = logged_user, data = request.form, joinedRidesIds = joinedRidesIds, createdRidesIds=createdRidesIds)
     return redirect('/')
 
 

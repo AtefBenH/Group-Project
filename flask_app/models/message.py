@@ -18,7 +18,7 @@ class Message:
         return True
     
     @classmethod
-    def save(cls, data):
+    def send(cls, data):
         query = """
             INSERT INTO messages (sender_id, receiver_id, message, ride_id)
             VALUES (%(sender_id)s, %(receiver_id)s, %(message)s, %(ride_id)s);

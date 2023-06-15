@@ -89,6 +89,17 @@ class Ride:
         return created_rides
 
     @classmethod
+    def get_created_rides_id(cls, data):
+        created_rides_id = []
+        query = """
+            SELECT id FROM rides WHERE user_id = %(user_id)s;
+        """
+        results = connectToMySQL(DATABASE).query_db(query, data)
+        for row in results:
+            created_rides_id.append(row['id'])
+        return created_rides_id
+
+    @classmethod
     def update(cls, data):
         query = """
             UPDATE rides SET 
@@ -117,13 +128,18 @@ class Ride:
 
     @classmethod
     def get_passengers(cls, data):
-        query = "SELECT * FROM rides JOIN join_rides ON join_rides.ride_id = rides.id LEFT JOIN users ON join_rides.user_id = users.id WHERE rides.id = %(id)s ORDER BY users.first_name;"
+        query = """SELECT * FROM rides 
+        JOIN join_rides ON join_rides.ride_id = rides.id 
+        LEFT JOIN users ON join_rides.user_id = users.id 
+        WHERE rides.id = %(id)s ORDER BY users.first_name;"""
         results = connectToMySQL(DATABASE).query_db(query , data)
-        riders = []
+        print('Results Of Get Passengers : -----------', results)
+        passengers = []
         if (len(results)>0):
             for row_from_db in results:
                 user_data = {
                     "id" : row_from_db["users.id"],
+                    "ride_id" : row_from_db["ride_id"],
                     "first_name" : row_from_db["first_name"],
                     "last_name" : row_from_db["last_name"],
                     "email" : row_from_db["email"],
@@ -131,8 +147,8 @@ class Ride:
                     "created_at" : row_from_db["users.created_at"],
                     "updated_at" : row_from_db["users.updated_at"]
                 }
-                riders.append(user.User(user_data))
-        return riders
+                passengers.append(user.User(user_data))
+        return passengers
     
     #Add user to the list that took the ride
     @classmethod
@@ -192,15 +208,15 @@ class Ride:
     # ?SEARCH ride BY DRIVER
     @classmethod
     def searchByDriver(cls, data):
-        query = """SELECT * FROM users 
-            JOIN rides ON rides.user_id = users.id 
+        query = """SELECT * FROM rides 
+            JOIN users ON rides.user_id = users.id 
             WHERE users.first_name LIKE %(search)s OR users.last_name LIKE %(search)s;
             """
         results = connectToMySQL(DATABASE).query_db(query, data)
         rides = []
         for row in results:
             ride = cls(row)
-            ride.driver = {'id' : row['user_id'],
+            ride.driver = {'id' : row['users.id'],
                                 'first_name' : row['first_name'],
                                 'last_name' : row['last_name'],
                                 'email' : row['email']

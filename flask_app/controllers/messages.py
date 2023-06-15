@@ -14,7 +14,7 @@ def sendMessage(profile_id):
                 'message' : request.form['message'],
                 'ride_id' : request.form['ride_id']
             }
-            Message.save(data)
+            Message.send(data)
             status = 'Success'
         return jsonify({'status' : status})
     return redirect('/')
