@@ -24,3 +24,13 @@ class Message:
             VALUES (%(sender_id)s, %(receiver_id)s, %(message)s, %(ride_id)s);
         """
         return connectToMySQL(DATABASE).query_db(query, data)
+    
+    @classmethod
+    def showAllMessagesForUser(cls, data):
+        query = "SELECT * FROM messages WHERE receiver_id = %(id)s;"
+        return connectToMySQL(DATABASE).query_db(query, data)
+    
+    @classmethod
+    def showActifMessagesForUser(cls, data):
+        query = "SELECT * FROM messages WHERE receiver_id = %(id)s AND status = 1;"
+        return connectToMySQL(DATABASE).query_db(query, data)
