@@ -42,7 +42,7 @@ def delete_from_ride(user_id, ride_id):
         message_to_send = f"""This Ride Has Been Cancelled For You :
         From : {ride.from_location}
         To : {ride.to_location}
-        When : {ride.when_time}
+        At : {ride.when_time}
         """
         message_data = {
                     'sender_id' : session['user_id'],

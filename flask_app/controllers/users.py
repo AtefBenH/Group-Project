@@ -14,7 +14,7 @@ bcrypt = Bcrypt(app)
 def index():
     if 'user_id' in session:
         return redirect('/home')
-    return render_template('login.html')
+    return render_template('index.html')
 
 @app.route('/users/view/<int:profile_id>')
 def view_own_profile(profile_id):
