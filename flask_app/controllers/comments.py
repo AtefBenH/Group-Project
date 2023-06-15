@@ -23,7 +23,7 @@ def delete_comment(comment_id):
         if comment :
             if comment.poster_id == session['user_id']:
                 Comment.delete({'id' : comment_id})
-                return redirect(f'/users/{comment.profile_id}/view')
+                return redirect(f'/users/view/{comment.profile_id}')
             # else :
             #     hacker = User.get_by_id({'id' : session['user_id']})
             #     if hacker.warning<1 : #TRUE MEANS IT'S HIS FIRST TIME

@@ -18,7 +18,25 @@ def index():
 
 @app.route('/users/view/<int:profile_id>')
 def view_own_profile(profile_id):
-    pass
+    if 'user_id' in session:
+        logged_user = User.get_by_id({'id' : session['user_id']})
+        user_profile = User.get_by_id({'id' : profile_id})
+        created_rides = Ride.get_created_rides({'id' : profile_id})
+        comments = Comment.getAllByProfile({'id' : profile_id})
+        rate = Rate.getAvgRate({'id' : profile_id})
+        all_raters_id = Rate.get_profile_raters_id({'profile_id' : profile_id})
+        actual_rate = Rate.get_rater_profile_rate({'rater_id' : session['user_id'], 'profile_id' : profile_id})
+        countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
+        actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
+        if actual_rate:
+            this_actual_rate = actual_rate[0]['rate']
+        else:
+            this_actual_rate = None
+        raters_ids = []
+        for rater_id in all_raters_id:
+            raters_ids.append(rater_id['rater_id'])
+        return render_template('view_profile.html', user = logged_user, rides = created_rides, profile = user_profile, comments = comments, rate = rate, raters_ids = raters_ids, actual_rate = this_actual_rate, countMessages=countMessages, messages=actifMessages)
+    return render_template('login.html')
 
 @app.route('/users/view/<int:profile_id>/<int:ride_id>')
 def view_profile(profile_id, ride_id):

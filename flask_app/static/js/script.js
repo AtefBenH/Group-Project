@@ -283,7 +283,7 @@ function findRide() {
                                         reserveButton.classList.add("btn-sm");
                                         reserveButton.classList.add("btn-outline-primary");
                                         reserveButton.setAttribute("onclick", "reserveSeat(this)");
-                                        reserveButton.innerText = "Save";
+                                        reserveButton.innerText = "Reserve";
                                         cell.appendChild(reserveButton);
                                         break;
                                     }
@@ -420,7 +420,7 @@ function addComment()
                     }
                 else 
                     {
-                        window.location.replace('/users/'+data.status+'/view');
+                        window.location.replace('/users/view/'+data.status);
                     }
             });
     }
@@ -466,7 +466,7 @@ function changeComment(element) {
 
             }
             else {
-                window.location.replace('/users/' + data.status + '/view')
+                window.location.replace('/users/view/'+data.status);
             }
 
         }).catch(error => {
