@@ -173,19 +173,20 @@ class Ride:
             """
         results = connectToMySQL(DATABASE).query_db(query, data)
         rides = []
-        for row in results:
-            ride = {
-                'id' : row['id'],
-                'user_id' : row['user_id'],
-                'from_location' : row['from_location'],
-                'to_location' : row['to_location'],
-                'when_time' : row['when_time'],
-                'seats' : row['seats'],
-                'driver' : f"{row['first_name']} {row['last_name']}",
-                'created_at' : row['created_at'],
-                'updated_at' : row['updated_at']
-            }
-            rides.append(ride)
+        if results:
+            for row in results:
+                ride = {
+                    'id' : row['id'],
+                    'user_id' : row['user_id'],
+                    'from_location' : row['from_location'],
+                    'to_location' : row['to_location'],
+                    'when_time' : row['when_time'],
+                    'seats' : row['seats'],
+                    'driver' : f"{row['first_name']} {row['last_name']}",
+                    'created_at' : row['created_at'],
+                    'updated_at' : row['updated_at']
+                }
+                rides.append(ride)
         return rides
 
 
@@ -195,14 +196,15 @@ class Ride:
         query = "SELECT * FROM rides JOIN users ON users.id = rides.user_id WHERE {filter} LIKE %(search)s;"
         results = connectToMySQL(DATABASE).query_db(query.format(filter=data['filter']), data)
         rides = []
-        for row in results:
-            ride = cls(row)
-            ride.driver = {'id' : row['user_id'],
-                                'first_name' : row['first_name'],
-                                'last_name' : row['last_name'],
-                                'email' : row['email']
-                            }
-            rides.append(ride)
+        if results:
+            for row in results:
+                ride = cls(row)
+                ride.driver = {'id' : row['user_id'],
+                                    'first_name' : row['first_name'],
+                                    'last_name' : row['last_name'],
+                                    'email' : row['email']
+                                }
+                rides.append(ride)
         return rides
     
     # ?SEARCH ride BY DRIVER

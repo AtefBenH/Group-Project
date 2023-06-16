@@ -183,5 +183,16 @@
         </div>
     </div>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function updateActualDatetime() {
+            var now = new Date();
+            now.setHours(now.getHours() + 3);
+            var fieldDatetime = document.getElementById("when");
+            var format = now.toISOString().slice(0, 16);
+            fieldDatetime.value = format;
+        }
+
+        setInterval(updateActualDatetime, 1000);
+    </script>
     </body>
     </html>
