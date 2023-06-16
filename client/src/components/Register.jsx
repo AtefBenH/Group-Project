@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-
 const Register = () => {
     const [formData, setFormData] = useState({
         first_name: '',
@@ -41,65 +40,110 @@ const Register = () => {
     };
 
     return (
-        <div>
-            <h2>New here? Register</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+        <section>
+            <div className="px-4 py-5 px-md-5 text-center text-lg-start" style={{ backgroundColor: 'hsl(0, 0%, 96%)' }}>
+                <div className="container">
+                    <div className="row gx-lg-5 align-items-center">
+                        <div className="col-lg-6 mb-5 mb-lg-0">
+                            <h1 className="my-5 display-3 fw-bold ls-tight">Join the Carpool Revolution</h1>
+                            <h4 className="text-primary fst-italic">
+                                Save money, reduce your carbon footprint, and meet new people by joining a carpool. With our easy-to-use platform, find a carpool that fits your schedule and lifestyle.
+                            </h4>
+                        </div>
 
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>First Name:</label>
-                    <input
-                        type="text"
-                        name="first_name"
-                        value={first_name}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Last Name:</label>
-                    <input
-                        type="text"
-                        name="last_name"
-                        value={last_name}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={email}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        name="password"
-                        value={password}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Confirm Password:</label>
-                    <input
-                        type="password"
-                        name="confirm_password"
-                        value={confirm_password}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                        <div className="col-lg-6 mb-5 mb-lg-0">
+                            <div className="card">
+                                <div className="card-body py-5 px-md-5">
+                                    <div className="pb-3">
+                                        <h4 className="text-primary-emphasis">Register</h4>
+                                    </div>
+                                    {error && <div id="regErrorMessage" className="text-bg-danger text-center m-3">{error}</div>}
+                                    <form onSubmit={handleSubmit}>
+                                        <div className="row">
+                                            <div className="col-md-6 mb-4">
+                                                <div className="form-outline">
+                                                    <input
+                                                        type="text"
+                                                        name="first_name"
+                                                        id="first_name"
+                                                        className="form-control"
+                                                        placeholder="First Name"
+                                                        value={first_name}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6 mb-4">
+                                                <div className="form-outline">
+                                                    <input
+                                                        type="text"
+                                                        name="last_name"
+                                                        id="last_name"
+                                                        className="form-control"
+                                                        placeholder="Last Name"
+                                                        value={last_name}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
 
-                <button type="submit">Register</button>
-            </form>
-        </div>
+                                        <div className="form-outline mb-4">
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                id="email"
+                                                className="form-control"
+                                                placeholder="Valid Email address"
+                                                value={email}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+
+                                        <div className="form-outline mb-4">
+                                            <input
+                                                type="password"
+                                                name="password"
+                                                id="password"
+                                                className="form-control"
+                                                placeholder="Password"
+                                                value={password}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="form-outline mb-4">
+                                            <input
+                                                type="password"
+                                                name="confirm_password"
+                                                id="confirm_password"
+                                                className="form-control"
+                                                placeholder="Confirm Password"
+                                                value={confirm_password}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+
+                                        <div className="d-flex justify-content-between">
+                                            <button type="submit" className="btn btn-primary btn-block mb-4">
+                                                Sign Up
+                                            </button>
+                                            <p className="small fw-bold mt-2 pt-1 mb-0">
+                                                Already have an account? <a href="/" className="link-primary">Sign In</a>
+                                            </p>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     );
 };
 
