@@ -24,14 +24,16 @@ class Join_ride:
         joined_rides_id = []
         query = """SELECT rides.id FROM rides 
         JOIN join_rides 
-        ON rides.id = join_rides.ride_id
+        ON join_rides.ride_id = rides.id
         JOIN users
-        ON join_rides.user_id = users.id
+        ON  users.id = join_rides.user_id
         WHERE users.id = %(id)s;
         """
         results = connectToMySQL(DATABASE).query_db(query, data)
-        for row in results:
-            joined_rides_id.append(row['id'])
+        print("#"*30, results, "#"*30)
+        if results :
+            for row in results:
+                joined_rides_id.append(row['id'])
         return joined_rides_id
 
     #DELETE ALL THE TRIPS FOR DELETED RIDE (By Driver)
