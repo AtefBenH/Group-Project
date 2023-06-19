@@ -13,7 +13,7 @@ class Message:
 
     @staticmethod
     def validate(data):
-        if len(data['message'])<5:
+        if len(data['message'])<2:
             return False
         return True
     
@@ -26,20 +26,38 @@ class Message:
         return connectToMySQL(DATABASE).query_db(query, data)
     
     @classmethod
+    def remove_message(cls, data):
+        query = "DELETE FROM messages WHERE id = %(id)s;"
+        return connectToMySQL(DATABASE).query_db(query, data)
+    
+    @classmethod
+    def asReadMessage(cls, data):
+        query = """
+            UPDATE messages SET 
+            status = 1
+            WHERE id = %(id)s;
+        """
+        return connectToMySQL(DATABASE).query_db(query, data)
+    
+    @classmethod
     def showAllMessagesForUser(cls, data):
-        query = "SELECT * FROM messages WHERE receiver_id = %(id)s;"
+        query = """SELECT * FROM users 
+        JOIN messages ON messages.sender_id = users.id
+        JOIN rides ON messages.ride_id = rides.id
+        WHERE receiver_id = %(id)s;"""
         return connectToMySQL(DATABASE).query_db(query, data)
     
     @classmethod
     def showActifMessagesForUser(cls, data):
         query = """SELECT * FROM users 
-        JOIN messages ON messages.sender_id = users.id
-        WHERE receiver_id = %(id)s AND status = 1;"""
+        LEFT JOIN messages ON messages.sender_id = users.id
+        LEFT JOIN rides ON messages.ride_id = rides.id
+        WHERE receiver_id = %(id)s AND status = 0 ORDER BY messages.created_at DESC;"""
         return connectToMySQL(DATABASE).query_db(query, data)
     
     @classmethod
     def countActifMessagesForUser(cls, data):
-        query = "SELECT Count(*) AS numbMessages FROM messages WHERE receiver_id = %(id)s AND status = 1;"
+        query = "SELECT Count(*) AS numbMessages FROM messages WHERE receiver_id = %(id)s AND status = 0;"
         result = connectToMySQL(DATABASE).query_db(query, data)
         if result[0]['numbMessages']>0 :
             return result[0]['numbMessages']

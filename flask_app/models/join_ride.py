@@ -30,7 +30,6 @@ class Join_ride:
         WHERE users.id = %(id)s;
         """
         results = connectToMySQL(DATABASE).query_db(query, data)
-        print("#"*30, results, "#"*30)
         if results :
             for row in results:
                 joined_rides_id.append(row['id'])

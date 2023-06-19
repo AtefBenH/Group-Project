@@ -133,7 +133,6 @@ class Ride:
         LEFT JOIN users ON join_rides.user_id = users.id 
         WHERE rides.id = %(id)s ORDER BY users.first_name;"""
         results = connectToMySQL(DATABASE).query_db(query , data)
-        print('Results Of Get Passengers : -----------', results)
         passengers = []
         if (len(results)>0):
             for row_from_db in results:
@@ -169,7 +168,8 @@ class Ride:
             WHERE rides.from_location LIKE %(from_location)s 
             AND rides.to_location LIKE %(to_location)s
             AND rides.when_time BETWEEN (%(when_time)s - INTERVAL '12' HOUR) AND (%(when_time)s + INTERVAL '12' HOUR)
-            AND rides.seats >0;
+            AND rides.seats >0 
+            AND rides.when_time >= NOW();
             """
         results = connectToMySQL(DATABASE).query_db(query, data)
         rides = []
@@ -193,7 +193,11 @@ class Ride:
     #!SEARCH ride BY FILTER (TITLE, AUTHOR, DESCRIPTION)
     @classmethod
     def search(cls, data):
-        query = "SELECT * FROM rides JOIN users ON users.id = rides.user_id WHERE {filter} LIKE %(search)s;"
+        query = """SELECT * FROM rides 
+            JOIN users ON users.id = rides.user_id 
+            WHERE {filter} LIKE %(search)s 
+            AND rides.when_time >= NOW();
+            """
         results = connectToMySQL(DATABASE).query_db(query.format(filter=data['filter']), data)
         rides = []
         if results:
@@ -212,16 +216,28 @@ class Ride:
     def searchByDriver(cls, data):
         query = """SELECT * FROM rides 
             JOIN users ON rides.user_id = users.id 
-            WHERE users.first_name LIKE %(search)s OR users.last_name LIKE %(search)s;
+            WHERE (users.first_name LIKE %(search)s 
+            OR users.last_name LIKE %(search)s)
+            AND rides.when_time >= NOW();
             """
         results = connectToMySQL(DATABASE).query_db(query, data)
         rides = []
-        for row in results:
-            ride = cls(row)
-            ride.driver = {'id' : row['users.id'],
-                                'first_name' : row['first_name'],
-                                'last_name' : row['last_name'],
-                                'email' : row['email']
-                            }
-            rides.append(ride)
+        if results:
+            for row in results:
+                ride = cls(row)
+                ride.driver = {'id' : row['users.id'],
+                                    'first_name' : row['first_name'],
+                                    'last_name' : row['last_name'],
+                                    'email' : row['email']
+                                }
+                rides.append(ride)
         return rides
+    
+    
+    @classmethod
+    def countCreatedRidesForUser(cls, data):
+        query = "SELECT Count(*) AS numbRides FROM rides WHERE user_id = %(id)s;"
+        result = connectToMySQL(DATABASE).query_db(query, data)
+        if result[0]['numbRides']>0 :
+            return result[0]['numbRides']
+        return 0

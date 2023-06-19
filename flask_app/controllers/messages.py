@@ -17,3 +17,24 @@ def sendMessage(profile_id):
             status = 'Success'
         return jsonify({'status' : status})
     return redirect('/')
+
+
+@app.route('/messages/<int:message_id>/delete')
+def delete_Message(message_id):
+    if 'user_id' in session:
+        data = {
+            'id' : message_id
+        }
+        Message.remove_message(data)
+        status = 'Success'
+        # return jsonify({'status' : status})
+        return redirect('/home')
+    return redirect('/')
+
+
+@app.route('/messages/<int:message_id>/asread')
+def asReadMessage(message_id):
+    if 'user_id' in session:
+        Message.asReadMessage({'id' : message_id})
+        return jsonify({'status' : 'Success'})
+    return redirect('/')
