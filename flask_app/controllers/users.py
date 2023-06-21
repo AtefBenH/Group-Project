@@ -12,13 +12,15 @@ bcrypt = Bcrypt(app)
 
 @app.route('/')
 def index():
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         return redirect('/home')
     return render_template('index.html')
 
 @app.route('/users/view/<int:profile_id>/<int:ride_id>')
 def view_profile(profile_id, ride_id):
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         logged_user = User.get_by_id({'id' : session['user_id']})
         user_profile = User.get_by_id({'id' : profile_id})
         created_rides = Ride.get_created_rides({'id' : profile_id})
@@ -43,7 +45,8 @@ def view_profile(profile_id, ride_id):
 
 @app.route('/home')
 def home():
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         logged_user = User.get_by_id({'id' : session['user_id']})
         countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
         actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
@@ -74,7 +77,8 @@ def create_user():
 
 @app.route('/api/users')
 def get_all():
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         all_users = User.get_all_users()
         return jsonify({'all_users' : all_users})
     return redirect('/')
