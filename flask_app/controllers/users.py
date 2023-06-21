@@ -6,8 +6,12 @@ from flask_app.models.rate import Rate
 from flask_app.models.comment import Comment
 from flask_app.models.message import Message
 from flask_bcrypt import Bcrypt
+from flask_session import Session
+from flask_cors import CORS, cross_origin
 
 bcrypt = Bcrypt(app)
+server_session = Session(app)
+CORS(app, supports_credentials=True)
 
 
 @app.route('/')
@@ -57,7 +61,8 @@ def home():
 
 @app.route('/register')
 def register():
-    if 'user_id' not in session:
+    user_id = session.get('user_id')
+    if not user_id:
         return render_template('register.html')
     return redirect('/')
 

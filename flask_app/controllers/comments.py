@@ -1,11 +1,16 @@
 from flask_app import app
 from flask import request, session, jsonify, redirect, render_template
 from flask_app.models.comment import Comment
+from flask_cors import CORS, cross_origin
+from flask_session import Session
 
+server_session = Session(app)
+CORS(app, supports_credentials=True)
 
 @app.route('/comments/create', methods = ['POST'])
 def create_comment():
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         status = 'Fail'
         if Comment.validate(request.form):
             data = {
@@ -18,7 +23,8 @@ def create_comment():
 
 @app.route('/comments/<int:comment_id>/<int:ride_id>/delete')
 def delete_comment(comment_id, ride_id):
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         comment = Comment.getById({'id' : comment_id})
         if comment :
             if comment.poster_id == session['user_id']:

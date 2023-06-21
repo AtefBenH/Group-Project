@@ -3,11 +3,17 @@ from flask import redirect, session, jsonify
 from flask_app.models.ride import Ride
 from flask_app.models.message import Message
 from flask_app.models.join_ride import Join_ride
+from flask_cors import CORS, cross_origin
+from flask_session import Session
+
+server_session = Session(app)
+CORS(app, supports_credentials=True)
 
 
 @app.route('/join_rides/<int:ride_id>/create')
 def add_join_ride(ride_id):
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         data = {
             'user_id' : session['user_id'],
             'ride_id' : ride_id
@@ -19,7 +25,8 @@ def add_join_ride(ride_id):
 
 @app.route('/join_rides/<int:ride_id>/delete')
 def delete(ride_id):
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         data = {
             'user_id' : session['user_id'],
             'ride_id' : ride_id
@@ -33,7 +40,8 @@ def delete(ride_id):
 #added this method to delete a passenger from the ride
 @app.route('/join_rides/<int:user_id>/<int:ride_id>/delete')
 def delete_from_ride(user_id, ride_id):
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         ride = Ride.get_by_id({'id' : ride_id})
         data = {
             'user_id' : user_id,

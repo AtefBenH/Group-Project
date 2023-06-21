@@ -5,11 +5,17 @@ from flask_app.models.ride import Ride
 from flask_app.models.message import Message
 from flask_app.models.join_ride import Join_ride
 from datetime import datetime
+from flask_cors import CORS, cross_origin
+from flask_session import Session
+
+server_session = Session(app)
+CORS(app, supports_credentials=True)
 
 
 @app.route('/api/rides')
 def ride_form():
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         logged_user = User.get_by_id({'id' : session['user_id']})
         countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
         actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
@@ -21,7 +27,8 @@ def ride_form():
 
 @app.route('/api/rides/', methods=['POST'])
 def create_ride():
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         errors = Ride.validate(request.form)
         if len(errors)==0:
             Ride.save({**request.form, 'user_id':session['user_id']})
@@ -32,7 +39,8 @@ def create_ride():
 
 @app.route('/api/my_created_rides')
 def my_created_rides():
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         logged_user = User.get_by_id({'id' : session['user_id']})
         created_rides = Ride.get_created_rides({'id' : session['user_id']})
         countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
@@ -44,7 +52,8 @@ def my_created_rides():
 
 @app.route('/my_rides')
 def show_rides():
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         created_rides = Ride.get_created_rides({'id' : session['user_id']})
         logged_user = User.get_by_id({'id':session['user_id']})
         user_rides_id = Join_ride.get_rides_id_for_user({'id' : session['user_id']})
@@ -55,7 +64,8 @@ def show_rides():
 
 @app.route('/rides/<int:ride_id>/view')
 def view_ride(ride_id):
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         ride = Ride.get_by_id({'id' : ride_id})
         if ride:
             logged_user = User.get_by_id({'id' : session['user_id']})
@@ -70,7 +80,8 @@ def view_ride(ride_id):
 
 @app.route('/rides/<int:ride_id>/edit')
 def edit_ride(ride_id):
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         ride = Ride.get_by_id({'id' : ride_id})
         logged_user = User.get_by_id({'id' : session['user_id']})
         countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
@@ -96,7 +107,8 @@ def edit_ride(ride_id):
 
 @app.route('/rides/<int:ride_id>/update', methods = ['POST'])
 def update_ride(ride_id):
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         errors = Ride.validate(request.form)
         if len(errors)>0:
             return jsonify({'errors' : errors})
@@ -110,7 +122,8 @@ def update_ride(ride_id):
 
 @app.route('/rides/<int:ride_id>/delete')
 def delete_ride(ride_id):
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         ride_to_delete = Ride.get_by_id({'id' : ride_id})
         if ride_to_delete:
             if ride_to_delete.user_id == session['user_id'] :
@@ -140,7 +153,8 @@ def delete_ride(ride_id):
 
 @app.route('/api/rides/find')
 def find():
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         logged_user = User.get_by_id({'id' : session['user_id']})
         countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
         actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
@@ -152,7 +166,8 @@ def find():
 
 @app.route('/api/rides/find', methods = ['POST'])
 def find_rides():
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         errors = Ride.validate(request.form)
         if len(errors)==0:
             data = {
@@ -170,7 +185,8 @@ def find_rides():
 
 @app.route('/search', methods=['POST'])
 def search():
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         logged_user = User.get_by_id({'id':session['user_id']})
         joinedRidesIds = Join_ride.get_rides_id_for_user({'id':session['user_id']})
         createdRidesIds = Ride.get_created_rides_id({'user_id' : session['user_id']})
@@ -193,7 +209,8 @@ def search():
 
 @app.route('/autocomplete')
 def autoComplete():
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if user_id:
         search_term = request.args.get('term')
         rides = Ride.get_all()
         target = []

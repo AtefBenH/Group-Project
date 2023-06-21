@@ -119,13 +119,13 @@
                             <form id="createRideForm">
                                 <div class="form-outline mb-4">
                                     <label for="from_location" class="form-label-lg">From:</label>
-                                    <input name="from_location" type="text" id="from" class="form-control form-control-lg"
+                                    <input id="from_location" name="from_location" type="text" id="from" class="form-control form-control-lg"
                                         placeholder="From" />
                                 </div>
                                 
                                 <div class="form-outline mb-4">
                                     <label for="to_location" class="form-label-lg">To:</label>
-                                    <input name="to_location" type="text" id="to" class="form-control form-control-lg"
+                                    <input id="to_location" name="to_location" type="text" id="to" class="form-control form-control-lg"
                                         placeholder="To" />
                                 </div>
             
@@ -270,7 +270,8 @@
         $(document).ready(function () {
             
             var searchInput = $('#search');
-            //var filter = $('#filter');
+            var from = $('#from_location');
+            var to = $('#to_location');
 
             searchInput.autocomplete({
                 source: function (request, response) {
@@ -288,6 +289,42 @@
                     });
                 },
                 minLength: 2
+            });
+            from.autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '/autocomplete',
+                        method: 'GET',
+                        dataType: 'json',
+                        data: {
+                            term: request.term
+                        },
+                        success: function (data) {
+                            response(data);
+                            console.log(data);
+                        }
+                    });
+
+                },
+                minLength: 1
+            });
+            to.autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '/autocomplete',
+                        method: 'GET',
+                        dataType: 'json',
+                        data: {
+                            term: request.term
+                        },
+                        success: function (data) {
+                            response(data);
+                            console.log(data);
+                        }
+                    });
+            
+                },
+                minLength: 1
             });
         });
     </script>
