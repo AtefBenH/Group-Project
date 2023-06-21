@@ -11,6 +11,8 @@ class User:
         self.last_name = data['last_name']
         self.email = data['email']
         self.password = data['password']
+        self.state = data['state']
+        self.role = data['role']
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
         self.joined_rides = []
@@ -122,8 +124,13 @@ class User:
         query = "INSERT INTO likes (ride_id, user_id) VALUES (%(ride_id)s, %(user_id)s);"
         return connectToMySQL(DATABASE).query_db(query, data)
     
+
+    @classmethod
+    def activate(cls, data):
+        query = "UPDATE users SET state = 0 WHERE id = %(id)s;"
+        return connectToMySQL(DATABASE).query_db(query, data)
     
     @classmethod
-    def delete(cls, data):
-        query = "DELETE FROM users WHERE id = %(id)s;"
+    def desactivate(cls, data):
+        query = "UPDATE users SET state = 1 WHERE id = %(id)s;"
         return connectToMySQL(DATABASE).query_db(query, data)

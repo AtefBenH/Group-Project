@@ -94,10 +94,39 @@ def login():
     # data = request.get_json()
     user_from_db = User.get_by_email({'email' : request.form['email']})
     if user_from_db :
-        if bcrypt.check_password_hash(user_from_db.password, request.form['password']):
-            session['user_id'] = user_from_db.id
-            return jsonify({'message' : "success"})
+        if user_from_db.state == 0:
+            if bcrypt.check_password_hash(user_from_db.password, request.form['password']):
+                session['user_id'] = user_from_db.id
+                if user_from_db.role == 'admin':
+                    session['admin'] = True
+                    return jsonify({'message' : "admin"})
+                session['user_id'] = user_from_db.id
+                return jsonify({'message' : "success"})
+        else:
+            return jsonify({'message' : "Desactivated"})
     return jsonify({'message' : "Error"})
+
+
+@app.route('/admin')
+def admin():
+    if session.get('admin'):
+        all_users = User.get_all_users()
+        print("*"*30, all_users[0])
+        return render_template('admin.html', users = all_users)
+
+@app.route('/admin/activate/<int:user_id>')
+def activate(user_id):
+    if session.get('admin'):
+        User.activate({'id' : user_id})
+        all_users = User.get_all_users()
+        return render_template('admin.html', users = all_users)
+
+@app.route('/admin/desactivate/<int:user_id>')
+def desactivate(user_id):
+    if session.get('admin'):
+        User.desactivate({'id' : user_id})
+        all_users = User.get_all_users()
+        return render_template('admin.html', users = all_users)
 
 
 @app.route('/logout')

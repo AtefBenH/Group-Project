@@ -33,16 +33,26 @@ function login()
         fetch("/api/users/login", { method: 'POST', body: formData })
             .then(response => response.json())
             .then(data => {
+                console.log(data);
                 if (data.message == "Error") 
                     {
                         error = document.getElementById('logErrorMessage');
                         error.innerText = "Wrong Informations";
                         loginForm.reset();
                     }
-                else 
+                else if (data.message == "Desactivated")
+                    {
+                        error = document.getElementById('logErrorMessage');
+                        error.innerText = "Account Desactivated By Admin";
+                        loginForm.reset();
+                    }
+                else if (data.message == "success")
                     {
                         window.location.replace('/home');
                     }
+                else {
+                    window.location.replace('/admin');
+                }
             });
     }
 
