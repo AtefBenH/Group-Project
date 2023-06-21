@@ -111,8 +111,8 @@ def login():
 def admin():
     if session.get('admin'):
         all_users = User.get_all_users()
-        print("*"*30, all_users[0])
         return render_template('admin.html', users = all_users)
+    return redirect('/')
 
 @app.route('/admin/activate/<int:user_id>')
 def activate(user_id):
@@ -120,6 +120,7 @@ def activate(user_id):
         User.activate({'id' : user_id})
         all_users = User.get_all_users()
         return render_template('admin.html', users = all_users)
+    return redirect('/')
 
 @app.route('/admin/desactivate/<int:user_id>')
 def desactivate(user_id):
@@ -127,6 +128,7 @@ def desactivate(user_id):
         User.desactivate({'id' : user_id})
         all_users = User.get_all_users()
         return render_template('admin.html', users = all_users)
+    return redirect('/')
 
 
 @app.route('/logout')
