@@ -9,6 +9,8 @@ flask-bcrypt = "*"
 pymysql = "*"
 pyjwt = "*"
 flask-cors = "*"
+flask-session = "*"
+redis = "*"
 
 [dev-packages]
 

@@ -4,7 +4,6 @@ from flask_app.models.rate import Rate
 
 @app.route('/rates/create/<int:profile_id>/<int:user_id>', methods = ['POST'])
 def rate(profile_id, user_id):
-    print("Rate method happening!")
     data = {
         'profile_id' : profile_id,
         'rater_id' : user_id,
@@ -15,14 +14,13 @@ def rate(profile_id, user_id):
     return redirect(f'/users/view/{profile_id}/{ride_id}')
 
 
-@app.route('/rates/update/<int:profile_id>/<int:user_id>', methods = ['POST'])
-def updaterate(profile_id, user_id):
-    print("Update rate method happening!")
+@app.route('/rates/update/<int:profile_id>/<int:user_id>/<int:ride_id>', methods = ['POST'])
+def updaterate(profile_id, user_id, ride_id):
     data = {
         'profile_id' : profile_id,
         'rater_id' : user_id,
         'rate' : request.form['rate']
     }
     Rate.updaterate(data)
-    return redirect(f'/users/{profile_id}/view')
+    return redirect(f'/users/view/{profile_id}/{ride_id}')
 

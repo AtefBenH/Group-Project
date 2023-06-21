@@ -13,7 +13,9 @@ def ride_form():
         logged_user = User.get_by_id({'id' : session['user_id']})
         countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
         actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
-        return render_template('form_ride.html', user = logged_user, countMessages=countMessages, messages=actifMessages)
+        count_rides = Ride.countCreatedRidesForUser({'id' : session['user_id']})
+        current_datetime = datetime.now().strftime('%Y-%m-%dT%H:%M')
+        return render_template('form_ride.html', user = logged_user, countMessages=countMessages, messages=actifMessages, count_rides=count_rides, current_datetime=current_datetime)
     return redirect('/')
 
 
@@ -35,7 +37,8 @@ def my_created_rides():
         created_rides = Ride.get_created_rides({'id' : session['user_id']})
         countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
         actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
-        return render_template('created_rides.html', user = logged_user, rides = created_rides, countMessages=countMessages, messages=actifMessages)
+        count_rides = Ride.countCreatedRidesForUser({'id' : session['user_id']})
+        return render_template('created_rides.html', user = logged_user, rides = created_rides, countMessages=countMessages, messages=actifMessages, count_rides=count_rides)
     return redirect('/')
 
 
@@ -45,7 +48,8 @@ def show_rides():
         created_rides = Ride.get_created_rides({'id' : session['user_id']})
         logged_user = User.get_by_id({'id':session['user_id']})
         user_rides_id = Join_ride.get_rides_id_for_user({'id' : session['user_id']})
-        return render_template('my_rides.html', created_rides = created_rides, user = logged_user, user_rides_id=user_rides_id)
+        count_rides = Ride.countCreatedRidesForUser({'id' : session['user_id']})
+        return render_template('my_rides.html', created_rides = created_rides, user = logged_user, user_rides_id=user_rides_id, count_rides=count_rides)
     return redirect('/')
 
 
@@ -59,7 +63,8 @@ def view_ride(ride_id):
             passengers = Ride.get_passengers({'id' : ride_id})
             countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
             actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
-            return render_template('view_ride.html',countMessages=countMessages, messages=actifMessages, ride = ride, user = logged_user, creator=creator, passengers=passengers)
+            count_rides = Ride.countCreatedRidesForUser({'id' : session['user_id']})
+            return render_template('view_ride.html',countMessages=countMessages, messages=actifMessages, ride = ride, user = logged_user, creator=creator, passengers=passengers, count_rides=count_rides)
     return redirect('/')
 
 
@@ -70,6 +75,7 @@ def edit_ride(ride_id):
         logged_user = User.get_by_id({'id' : session['user_id']})
         countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
         actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
+        count_rides = Ride.countCreatedRidesForUser({'id' : session['user_id']})
         try:
             joined_rides = User.get_user_with_rides({'id' : session['user_id']})
         except:
@@ -80,7 +86,7 @@ def edit_ride(ride_id):
             passengers = []
         if ride:
             if ride.user_id == session['user_id'] :
-                return render_template('edit_ride.html',countMessages=countMessages, messages=actifMessages,joined_rides=joined_rides, ride = ride, user=logged_user, passengers=passengers)
+                return render_template('edit_ride.html',countMessages=countMessages, messages=actifMessages,joined_rides=joined_rides, ride = ride, user=logged_user, passengers=passengers, count_rides=count_rides)
             else :
                 return redirect('/')
         else :
@@ -123,7 +129,7 @@ def delete_ride(ride_id):
                     }
                     Message.send(message_data)
                     Join_ride.deleteByRide({'ride_id' : ride_id})
-                    Ride.delete({'id' : ride_id})
+                Ride.delete({'id' : ride_id})
                 return redirect('/api/my_created_rides')
             else:
                 return redirect('/')
@@ -138,7 +144,8 @@ def find():
         logged_user = User.get_by_id({'id' : session['user_id']})
         countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
         actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
-        return render_template('find_ride.html', user=logged_user, countMessages=countMessages, messages=actifMessages)
+        count_rides = Ride.countCreatedRidesForUser({'id' : session['user_id']})
+        return render_template('find_ride.html', user=logged_user, countMessages=countMessages, messages=actifMessages, count_rides=count_rides)
     else:
         return redirect('/')
 
@@ -169,17 +176,40 @@ def search():
         createdRidesIds = Ride.get_created_rides_id({'user_id' : session['user_id']})
         countMessages = Message.countActifMessagesForUser({'id' : session['user_id']})
         actifMessages = Message.showActifMessagesForUser({'id' : session['user_id']})
+        count_rides = Ride.countCreatedRidesForUser({'id' : session['user_id']})
         search = f"%%{request.form['search']}%%"
         
         data = {
             'filter' : request.form['filter'],
             'search' : search
+            # 'when_time' : request.form['when_time']
         }
         if request.form['filter']!="driver":
             rides = Ride.search(data)
         else :
             rides = Ride.searchByDriver({'search':search})
-        return render_template('search.html',countMessages=countMessages, messages= actifMessages, rides = rides, user = logged_user, data = request.form, joinedRidesIds = joinedRidesIds, createdRidesIds=createdRidesIds)
+        return render_template('search.html',countMessages=countMessages, messages= actifMessages, rides = rides, user = logged_user, data = request.form, joinedRidesIds = joinedRidesIds, createdRidesIds=createdRidesIds, count_rides=count_rides)
+    return redirect('/')
+
+@app.route('/autocomplete')
+def autoComplete():
+    if 'user_id' in session:
+        search_term = request.args.get('term')
+        rides = Ride.get_all()
+        target = []
+        for i in range(len(rides)):
+            if rides[i]['from_location'] not in target:
+                target.append(rides[i]['from_location'])
+            if rides[i]['to_location'] not in target:
+                target.append(rides[i]['to_location'])
+            # if rides[i]['driver_fn'] not in target:
+            #     target.append(rides[i]['driver_fn'])
+            # if rides[i]['driver_ln'] not in target:
+            #     target.append(rides[i]['driver_ln'])
+        
+        # ! TO DO
+        matched_criterea = [criterea for criterea in target if search_term.lower() in criterea.lower()]
+        return jsonify(matched_criterea)
     return redirect('/')
 
 

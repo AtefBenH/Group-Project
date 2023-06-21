@@ -29,7 +29,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="/api/rides">Create a Ride</a>
+                                <a class="nav-link active" aria-current="page" href="/api/rides">Create a Ride</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" aria-current="page" href="/api/rides/find">Find a Ride</a>
@@ -37,39 +37,32 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/api/my_created_rides">Created Rides</a>
                             </li>
-                            <li class="nav-item">
-                                <button type="button" class="btn btn-dark" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
-                                aria-controls="staticBackdrop">
-                                    Messages <span class="badge badge-danger">{{countMessages}}</span>
-                                </button>
-                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     {{ user.first_name}}
                                 </a>
-                                <ul class="dropdown-menu text-center bg-secondary-subtle text-info-emphasis fw-medium">
+                                <ul class="dropdown-menu text-center bd-blue-100">
                                     <li>
-                                        <p clpss="dropdown-item">
-                                            {{ user.first_name}} {{ user.last_name}}
-                                        </p>
+                                        <a href="/users/view/{{user.id}}/{{0}}" class="btn btn-bd-light btn-md fw-bold">{{ user.first_name}} {{ user.last_name}}</a>
                                     </li>
                                     <li>
-                                        <p class="dropdown-item text-center bg-secondary-subtle text-info-emphasis fw-medium ">
-                                            {{ user.email }}
-                                        </p>
-                                    </li>
-                                    <li>
-                                        <p class="dropdown-item text-center bg-secondary-subtle text-info-emphasis fw-medium">
-                                            You Created <span id="count">xxx </span> Ride(s)
+                                        <p class="text-center fw-medium">
+                                            <span id="count">{{count_rides}}</span> Ride(s) Created
                                         </p>
                                     </li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
                                     <li>
-                                        <a href="/logout" class="dropdown-item text-center bg-secondary-subtle text-dark fw-bold">Logout</a>
+                                        <a href="/logout" class="btn btn-bd-light btn-md fw-bold">Logout</a>
                                     </li>
                                 </ul>
+                            </li>
+                            <li class="nav-item">
+                                <button type="button" class="btn btn-dark" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
+                                aria-controls="staticBackdrop">
+                                    Messages <span class="badge badge-danger">{{countMessages}}</span>
+                                </button>
                             </li>
                         </ul>
                         <form class="d-flex" method="POST" action="/search">
@@ -136,7 +129,7 @@
                                 <div class="form-outline mb-4">
                                     <label for="when_time" class="form-label-lg">When:</label>
                                     <input name="when_time" type="datetime-local" id="when" class="form-control form-control-lg"
-                                        placeholder="When"/>
+                                        placeholder="When" min="{{current_datetime}}" value="{{current_datetime}}"/>
                                 </div>
                 
                                 <div class="form-outline mb-4">
@@ -172,9 +165,16 @@
                             <p class="fw-bolder text-primary">From : {{ message.first_name }} {{ message.last_name }}</p>
                             <p class="fw-medium text-danger-emphasis fs-5">{{ message.message }}</p>
                             <p class="fw-medium"><span class="fst-italic">At :</span>{{ message['messages.created_at'] }}</p>
-                            <button class="btn btn-sm btn-outline-primary">Answer</button>
-                            <button class="btn btn-sm btn-outline-danger">Delete</button>
-                            <button class="btn btn-sm btn-outline-dark">Mark As Read</button>
+                            <button class="btn btn-sm btn-outline-primary answer-button-canvas" data-value1="{{ message.id }}"
+                                data-value2="{{ message.first_name }}" data-value3="{{ message.last_name }}" data-value4="{{ message['rides.id'] }}" data-value5="{{ message['messages.id'] }}" data-bs-toggle="modal"
+                                data-bs-target="#messageModal" data-bs-whatever="@mdo" onclick="messageAsRead1(this)">
+                                Answer
+                            </button>
+                            <button id="{{message['messages.id']}}" data-value1="{{message['messages.id']}}" class="btn btn-sm btn-outline-danger delete-button-canvas" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal">
+                                Delete
+                            </button>
+                            <button class="btn btn-sm btn-outline-dark" data-value1="{{ message['messages.id'] }}" onclick="messageAsRead(this)">Mark As Read</button>
                         </li>
                     {% endfor %}
                 </ol>
@@ -182,17 +182,87 @@
             </div>
         </div>
     </div>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="messageModalLabel">New message</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="messageErrorMessage" class="text-bg-danger text-center mb-3"></div>
+                    <form id="messageForm">
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Recipient:</label>
+                            <input type="text" disabled class="form-control" id="recipient-name">
+                        </div>
+                        <div class="mb-3">
+                            <input id="hiddenRide" name = "ride_id" type="hidden" value="{{ ride_id }}">
+                            <label for="message-text" class="col-form-label">Message:</label>
+                            <textarea name="message" class="form-control" id="message-text"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="sendMessage" type="button" class="btn btn-primary" onclick="sendMessage(this)">Send message</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
-        function updateActualDatetime() {
-            var now = new Date();
-            now.setHours(now.getHours() + 3);
-            var fieldDatetime = document.getElementById("when");
-            var format = now.toISOString().slice(0, 16);
-            fieldDatetime.value = format;
-        }
-
-        setInterval(updateActualDatetime, 1000);
+        var answerButtons = document.getElementsByClassName("answer-button-canvas");
+    
+        Array.from(answerButtons).forEach(function(button) {
+            button.addEventListener('click', function() {
+                var receiverId = button.getAttribute("data-value1");
+                var receiverfn = button.getAttribute("data-value2");
+                var receiverln = button.getAttribute("data-value3");
+                var rideId = button.getAttribute("data-value4");
+                document.getElementById("sendMessage").setAttribute("data-value1", receiverId);
+                document.getElementById("recipient-name").setAttribute("value", receiverfn+" "+receiverln);
+                document.getElementById("hiddenRide").setAttribute("value", rideId);
+            });
+        });
+    
+        var answerButton = document.getElementById("sendMessage");
+    
+        answerButton.addEventListener('click', function() {
+            var receiverId = answerButton.getAttribute("data-receiver-id");
+        });
     </script>
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteModalLabel">Alert</h1>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger">Are you sure?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-primary" id="confirmDeleteCanvas">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var deleteButtons = document.getElementsByClassName("delete-button-canvas");
+    
+        Array.from(deleteButtons).forEach(function(button) {
+            button.addEventListener('click', function() {
+                var messageId = button.getAttribute("data-value1");
+                document.getElementById("confirmDeleteCanvas").setAttribute("data-message-id", messageId);
+            });
+        });
+    
+        var confirmDeleteButton = document.getElementById("confirmDeleteCanvas");
+    
+        confirmDeleteButton.addEventListener('click', function() {
+            var messageId = confirmDeleteButton.getAttribute("data-message-id");
+            window.location.replace("/messages/" + messageId + "/delete");
+        });
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </body>
     </html>

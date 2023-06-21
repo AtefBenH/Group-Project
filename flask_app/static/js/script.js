@@ -5,21 +5,22 @@ async function refresh()
 
 function changeInput(element){
     if(element.value == 'when_time'){
+        oldInput = document.getElementById('search');
         inputDate = document.createElement('input');
         inputDate.setAttribute('id', 'search');
         inputDate.setAttribute('name', 'search');
         inputDate.setAttribute('class', 'form-control me-2');
         inputDate.setAttribute('type', 'date');
-        oldInput = document.getElementById('search');
         oldInput.replaceWith(inputDate);
     }
     else{
         inputDate = document.createElement('input');
+        oldInput = document.getElementById('search');
         inputDate.setAttribute('id', 'search');
         inputDate.setAttribute('name', 'search');
         inputDate.setAttribute('class', 'form-control me-2');
-        inputDate.setAttribute('type', 'text');
-        oldInput = document.getElementById('search');
+        inputDate.setAttribute('type', 'search');
+        inputDate.setAttribute('aria-label', 'Search');
         oldInput.replaceWith(inputDate);
     }
 }
@@ -237,8 +238,9 @@ function findRide() {
                                     profileLink.setAttribute("data-value1", data.rides[key].user_id);
                                     profileLink.setAttribute("data-value2", data.rides[key].id);
                                     profileLink.classList.add("btn");
-                                    profileLink.classList.add("btn-sm");
-                                    profileLink.classList.add("btn-outline-dark");
+                                    profileLink.classList.add("btn-link");
+                                    // profileLink.classList.add("btn-sm");
+                                    // profileLink.classList.add("btn-outline-dark");
                                     profileLink.setAttribute("onclick", "viewProfile(this)");
                                     profileLink.innerText = data.rides[key].driver;
                                     cell.appendChild(profileLink);
@@ -322,7 +324,7 @@ function cancelSeat(element){
                 saveButton.classList.add("btn-sm");
                 saveButton.classList.add("btn-outline-primary");
                 saveButton.setAttribute("onclick", "reserveSeat(this)");
-                saveButton.innerText = "Save";
+                saveButton.innerText = "Reserve";
                 cell = document.getElementsByClassName('cell-'+key+'5');
                 cell[0].innerHTML = "";
                 cell[0].appendChild(saveButton);
@@ -365,6 +367,7 @@ function updateRide(ride_id) {
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             error = document.getElementById('UpdateRideErrorMessage');
             error.innerHTML = ""
             if (data.errors.length != 0) {
@@ -420,12 +423,12 @@ function addComment()
                     }
                 else 
                     {
-                        window.location.replace('/users/view/'+data.status);
+                        window.location.replace('/users/view/'+data.status+"/"+data.ride_id);
                     }
             });
     }
 
-function editComment(element)
+function editComment(element, ride_id)
     {
         idComment = element.value;
         content = element.parentNode.parentNode.innerText;
@@ -438,7 +441,7 @@ function editComment(element)
         newButton.setAttribute("value", idComment);
         newButton.classList.add("btn");
         newButton.classList.add("btn-outline-success");
-        newButton.setAttribute("onclick", "changeComment(this)");
+        newButton.setAttribute("onclick", "changeComment(this, " + ride_id + ")");
         newButton.innerHTML = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-check' viewBox='0 0 16 16'><path d='M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z'/></svg>";
         grandParent = element.parentNode.parentNode;
         grandParent.replaceWith(newInput);
@@ -446,7 +449,7 @@ function editComment(element)
         newInput.insertAdjacentElement('afterend', newButton);
     }
 
-function changeComment(element) {
+function changeComment(element, ride_id) {
     idComment = element.value;
     content = element.previousSibling.value;
     url = "/comments/" + idComment + "/edit/" + content;
@@ -466,7 +469,7 @@ function changeComment(element) {
 
             }
             else {
-                window.location.replace('/users/view/'+data.status);
+                window.location.replace('/users/view/'+data.status+'/'+ride_id);
             }
 
         }).catch(error => {
@@ -487,7 +490,7 @@ function sendMessage(element){
         console.log(data);
         if (data.status == "Fail") {
             errorField = document.getElementById('messageErrorMessage');
-            errorField.innerText = "Message must contain at least 5 characters";
+            errorField.innerText = "Message must contain at least 2 characters";
             commentField = document.getElementById('message-text');
             commentField.style.backgroundColor = "lightcoral";
         }
@@ -495,4 +498,21 @@ function sendMessage(element){
             window.location.reload();
         }
     });
+}
+
+function messageAsRead(element){
+    messageId = element.getAttribute("data-value1");
+    fetch("/messages/"+messageId+"/asread")
+            .then(response => response.json())
+            .then(data => {
+                element.parentNode.remove();
+            });
+}
+function messageAsRead1(element){
+    messageId = element.getAttribute("data-value5");
+    fetch("/messages/"+messageId+"/asread")
+            .then(response => response.json())
+            .then(data => {
+                element.parentNode.style.visibility = 'hidden';
+            });
 }

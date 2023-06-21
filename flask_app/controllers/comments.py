@@ -13,17 +13,17 @@ def create_comment():
             }
             Comment.save(data)
             status = request.form['profile_id']
-        return jsonify({'status' : status})
+        return jsonify({'status' : status, 'ride_id' : request.form['ride_id']})
     return redirect('/')
 
-@app.route('/comments/<int:comment_id>/delete')
-def delete_comment(comment_id):
+@app.route('/comments/<int:comment_id>/<int:ride_id>/delete')
+def delete_comment(comment_id, ride_id):
     if 'user_id' in session:
         comment = Comment.getById({'id' : comment_id})
         if comment :
             if comment.poster_id == session['user_id']:
                 Comment.delete({'id' : comment_id})
-                return redirect(f'/users/view/{comment.profile_id}')
+                return redirect(f'/users/view/{comment.profile_id}/{ride_id}')
             # else :
             #     hacker = User.get_by_id({'id' : session['user_id']})
             #     if hacker.warning<1 : #TRUE MEANS IT'S HIS FIRST TIME
@@ -54,6 +54,4 @@ def edit_comment(comment_id, comment):
         comment = Comment.getById({'id' : comment_id})
         if Comment.edit(data) == None:
             status = comment.profile_id
-    else:
-        print("No Comment", "#"*30)
     return jsonify({'status' : status})
