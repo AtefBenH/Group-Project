@@ -71,6 +71,18 @@ class User:
     
     # - GET ONE BY EMAIL
     @classmethod
+    def getAdmin(cls):
+        query = """
+            SELECT * FROM users WHERE role = 'admin'; 
+        """
+        results = connectToMySQL(DATABASE).query_db(query)
+        if len(results)<1:
+            return False
+        return cls(results[0])
+
+
+    # - GET ONE BY EMAIL
+    @classmethod
     def get_by_email(cls,data):
         query = """
             SELECT * FROM users WHERE email = %(email)s; 

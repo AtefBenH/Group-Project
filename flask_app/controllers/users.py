@@ -96,7 +96,6 @@ def login():
     if user_from_db :
         if user_from_db.state == 0:
             if bcrypt.check_password_hash(user_from_db.password, request.form['password']):
-                session['user_id'] = user_from_db.id
                 if user_from_db.role == 'admin':
                     session['admin'] = True
                     return jsonify({'message' : "admin"})
@@ -111,7 +110,8 @@ def login():
 def admin():
     if session.get('admin'):
         all_users = User.get_all_users()
-        return render_template('admin.html', users = all_users)
+        admin = User.getAdmin()
+        return render_template('admin.html',admin = admin, users = all_users)
     return redirect('/')
 
 @app.route('/admin/activate/<int:user_id>')
