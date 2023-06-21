@@ -119,7 +119,8 @@ def activate(user_id):
     if session.get('admin'):
         User.activate({'id' : user_id})
         all_users = User.get_all_users()
-        return render_template('admin.html', users = all_users)
+        admin = User.getAdmin()
+        return render_template('admin.html',admin = admin, users = all_users)
     return redirect('/')
 
 @app.route('/admin/desactivate/<int:user_id>')
@@ -127,7 +128,8 @@ def desactivate(user_id):
     if session.get('admin'):
         User.desactivate({'id' : user_id})
         all_users = User.get_all_users()
-        return render_template('admin.html', users = all_users)
+        admin = User.getAdmin()
+        return render_template('admin.html',admin = admin, users = all_users)
     return redirect('/')
 
 
