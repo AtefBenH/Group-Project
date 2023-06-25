@@ -39,7 +39,7 @@ class Rate:
             WHERE rater_id = %(rater_id)s AND profile_id = %(profile_id)s;
         """
         return connectToMySQL(DATABASE).query_db(query, data)
-    
+
     @classmethod
     def getAvgRate(cls, data):
         query = "SELECT AVG(rate) AS rate FROM rates where profile_id =  %(id)s;"

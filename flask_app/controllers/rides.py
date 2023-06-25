@@ -223,9 +223,9 @@ def autoComplete():
             #     target.append(rides[i]['driver_fn'])
             # if rides[i]['driver_ln'] not in target:
             #     target.append(rides[i]['driver_ln'])
-        
         # ! TO DO
         matched_criterea = [criterea for criterea in target if search_term.lower() in criterea.lower()]
+        matched_criterea.sort()
         return jsonify(matched_criterea)
     return redirect('/')
 

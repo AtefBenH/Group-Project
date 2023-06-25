@@ -111,6 +111,8 @@ def admin():
     if session.get('admin'):
         all_users = User.get_all_users()
         admin = User.getAdmin()
+        for user in all_users:
+            user.rate = Rate.getAvgRate({'id' : user.id})
         return render_template('admin.html',admin = admin, users = all_users)
     return redirect('/')
 
@@ -120,6 +122,8 @@ def activate(user_id):
         User.activate({'id' : user_id})
         all_users = User.get_all_users()
         admin = User.getAdmin()
+        for user in all_users:
+            user.rate = Rate.getAvgRate({'id' : user.id})
         return render_template('admin.html',admin = admin, users = all_users)
     return redirect('/')
 
@@ -129,6 +133,8 @@ def desactivate(user_id):
         User.desactivate({'id' : user_id})
         all_users = User.get_all_users()
         admin = User.getAdmin()
+        for user in all_users:
+            user.rate = Rate.getAvgRate({'id' : user.id})
         return render_template('admin.html',admin = admin, users = all_users)
     return redirect('/')
 

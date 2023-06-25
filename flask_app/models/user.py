@@ -106,8 +106,14 @@ class User:
 
     @classmethod
     def get_all_users(cls):
+        all_users = []
         query = "SELECT * FROM users;"
-        return connectToMySQL(DATABASE).query_db(query)
+        results = connectToMySQL(DATABASE).query_db(query)
+        if results:
+            for row in results:
+                all_users.append(cls(row))
+        return all_users
+
     
     @classmethod
     def get_user_with_rides(cls, data):

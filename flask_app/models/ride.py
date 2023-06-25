@@ -148,6 +148,8 @@ class Ride:
                     "last_name" : row_from_db["last_name"],
                     "email" : row_from_db["email"],
                     "password" : row_from_db["password"],
+                    "state" : row_from_db["state"],
+                    "role" : row_from_db["role"],
                     "created_at" : row_from_db["users.created_at"],
                     "updated_at" : row_from_db["users.updated_at"]
                 }
